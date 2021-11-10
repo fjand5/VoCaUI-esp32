@@ -1,7 +1,10 @@
 <template>
   <div class="component-wrapper">
     <el-col :xs="24" :span="span">
-      <el-card>
+      <el-card  
+      shadow="always"
+      :header="description"
+      >
         <slot />
       </el-card>
     </el-col>
@@ -12,13 +15,14 @@
 export default {
   props: {
     span: Number,
+    description: String
   },
 };
 </script>
 
 <style scoped>
 .el-card{
-    background: gray;
+    /* background: gray; */
 }
 .el-col {
   margin-bottom: 20px;

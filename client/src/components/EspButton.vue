@@ -2,8 +2,9 @@
   <div class="esp-button">
     <ComponentWrapper
     :span="props.span"
+    :description="props.description"
     >
-      <h1>{{ props.name }}</h1>
+      <el-button>{{ props.name }}</el-button>
     </ComponentWrapper>
   </div>
 </template>
