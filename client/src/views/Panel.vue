@@ -25,52 +25,27 @@
 
 <script>
 import EspButton from "../components/EspButton";
+import {mapGetters} from "vuex"
 export default {
   data() {
     return {
       selectedTab: "",
-      compts: [
-        {
-          type: "EspButton",
-          tab: "nhà hàng",
-          props: {
-            name: "nút 1",
-            description: "Bấm vào để bật",
-            span: 24,
-          },
-        },
-        {
-          type: "EspButton",
-          tab: "nhà hàng",
-          props: {
-            name: "nút 2",
-            span: 12,
-          },
-        },
-        {
-          type: "EspButton",
-          tab: "bếp",
-          props: {
-            name: "nút 3",
-            span: 12,
-          },
-        },
-      ],
     };
   },
   components: {
     EspButton,
   },
   computed: {
+    ...mapGetters(['getRender']),
     collectTabs: function () {
       let ret = new Set();
-      this.compts.forEach((elm) => {
+      this.getRender.forEach((elm) => {
         ret.add(elm.tab);
       });
       return ret;
     },
     selectedComponents: function () {
-      let ret = this.compts.filter((elm) => {
+      let ret = this.getRender.filter((elm) => {
         return elm.tab == this.selectedTab
       });
       return ret;

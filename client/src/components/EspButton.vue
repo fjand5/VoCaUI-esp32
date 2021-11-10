@@ -2,9 +2,17 @@
   <div class="esp-button">
     <ComponentWrapper
     :span="props.span"
-    :description="props.description"
+    :offset="props.offset"
+    :pull="props.pull"
+    :push="props.push"
     >
-      <el-button>{{ props.name }}</el-button>
+      <el-button
+      :size="props.size || 'medium'"
+      :type="props.type || 'primary'"
+      v-loading="sending"
+      element-loading-background="rgba(0, 0, 0, 0.5)"
+      @click="sendCommand()"
+      >{{ props.name }}</el-button>
     </ComponentWrapper>
   </div>
 </template>
@@ -16,9 +24,21 @@ export default {
   props: {
     props: Object,
   },
+  data:function(){
+    return{
+      sending: false
+    }
+  },
   components: {
     ComponentWrapper,
   },
+  methods:{
+    sendCommand: function(){
+      if(this.sending)
+        return
+      this.sending=true
+    }
+  }
 };
 </script>
 <style scoped>
