@@ -1,17 +1,16 @@
 <template>
-  <div class="esp-button">
+  <div class="esp-switch">
     <ComponentWrapper
       :span="props.span"
       :offset="props.offset"
       :pull="props.pull"
       :push="props.push"
     >
-      <el-button
-        :size="props.size || 'small'"
-        :type="props.type || 'primary'"
-        :round="props.round || true"
+      <el-switch
+        v-loading="sending"
+        element-loading-background="rgba(0, 0, 0, 0.5)"
         @click="sendCommand()"
-        >{{ props.name }}</el-button
+        >{{ props.name }}</el-switch
       >
     </ComponentWrapper>
   </div>
@@ -20,7 +19,7 @@
 <script>
 import ComponentWrapper from "./ComponentWrapper.vue";
 export default {
-  name: "EspButton",
+  name: "EspSwitch",
   props: {
     props: Object,
   },
@@ -33,11 +32,12 @@ export default {
     ComponentWrapper,
   },
   methods: {
+    sendCommand: function () {
+      if (this.sending) return;
+      this.sending = true;
+    },
   },
 };
 </script>
 <style scoped>
-/* .el-button {
-  width: 100%;
-} */
 </style>

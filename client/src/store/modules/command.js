@@ -13,6 +13,7 @@ const command = {
                     name: "nút 1",
                     description: "Bấm vào để bật",
                     span: {
+                    
                     },
                 },
             },
@@ -24,6 +25,7 @@ const command = {
                 props: {
                     name: "nút 2",
                     span: {
+                    
                     },
                 },
             },
@@ -34,6 +36,17 @@ const command = {
                 row: 0,
                 props: {
                     name: "nút 3",
+                    span: {
+                    },
+                },
+            },
+            {
+                type: "EspSwitch",
+                tab: "nhà hàng",
+                row: 1,
+                espKey: "swt_2",
+                props: {
+                    name: "sw 2",
                     span: {
                     },
                 },

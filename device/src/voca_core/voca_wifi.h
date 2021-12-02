@@ -1,12 +1,9 @@
 #pragma once
-#if defined(ESP8266)
-#include <ESP8266WiFi.h>
-#elif defined(ESP32)
 #include <WiFi.h>
-#endif
 #include <ArduinoJson.h>
-#include "store.h"
-#include "webserver.h"
+#include "voca_store.h"
+#include "voca_webserver.h"
+#include "voca_status.h"
 #define APID "vocaui"
 #define APPW "12345678"
 void scanWifi();
@@ -35,7 +32,10 @@ void setupWifi(void)
   }
   else
   {
-    WiFi.softAP(APID, APPW);
+    String mac = WiFi.macAddress();
+    mac.replace(":","");
+    String apid = String(APID) +"-" + mac;
+    WiFi.softAP(apid.c_str(), APPW);
   }
   if (checkKey("_ssid") && checkKey("_sspw"))
   {
@@ -65,9 +65,9 @@ void setupWifi(void)
     Serial.println(getValue("_ssid"));
     Serial.print("IP address: ");
     Serial.println(WiFi.localIP());
+    WiFi.onEvent(WiFiStationDisconnected, SYSTEM_EVENT_STA_DISCONNECTED);
   }
   
-  WiFi.onEvent(WiFiStationDisconnected, SYSTEM_EVENT_STA_DISCONNECTED);
   addHttpApi("scanWifi", scanWifi);
   addHttpApi("setWifi", setWifi);
   addHttpApi("getWifi", getWifi);

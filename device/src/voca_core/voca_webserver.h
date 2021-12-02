@@ -1,9 +1,9 @@
 #pragma once
-#include "dist.h"
+#include "voca_dist.h"
 #include <WebServer.h>
 
 #include <ArduinoJson.h>
-#include "store.h"
+#include "voca_store.h"
 WebServer server(80);
 
 typedef void (*Response)(void);
@@ -78,8 +78,24 @@ void setupWebserver()
   //     yield();
   //   });
   server.begin();
+  xTaskCreatePinnedToCore(
+      [](void* param)
+      {
+        Serial.print("loopWebserver is running on core ");
+        Serial.println(xPortGetCoreID());
+        while (1)
+        {
+          server.handleClient();
+        }
+      },
+      "loopWebserver",
+      100000,
+      NULL,
+      1,
+      NULL,
+      0
+  );
 }
 void loopWebserver()
 {
-  server.handleClient();
 }

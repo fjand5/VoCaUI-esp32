@@ -1,10 +1,10 @@
 <template>
   <div class="panel">
-    <el-tabs 
-    tab-position="top" 
-    type="border-card" 
-    :stretch="true"
-    v-model="selectedTab"
+    <el-tabs
+      tab-position="top"
+      type="border-card"
+      :stretch="true"
+      v-model="selectedTab"
     >
       <template v-for="(tab, index) in collectTabs">
         <el-tab-pane :key="index" :label="tab" :name="tab">
@@ -25,18 +25,21 @@
 
 <script>
 import EspButton from "../components/EspButton";
-import {mapGetters} from "vuex"
+import EspSwitch from "../components/EspSwitch";
+
+import { mapGetters } from "vuex";
 export default {
   data() {
     return {
-      selectedTab: "",
+      selectedTab: null,
     };
   },
   components: {
     EspButton,
+    EspSwitch
   },
   computed: {
-    ...mapGetters(['getRender']),
+    ...mapGetters(["getRender"]),
     collectTabs: function () {
       let ret = new Set();
       this.getRender.forEach((elm) => {
@@ -46,13 +49,19 @@ export default {
     },
     selectedComponents: function () {
       let ret = this.getRender.filter((elm) => {
-        return elm.tab == this.selectedTab
+        return elm.tab == this.selectedTab;
       });
       return ret;
     },
   },
-  mounted: function () {},
-  watch: {},
+  mounted: function () {
+    this.getRender.some((elm) => {
+        this.selectedTab = elm.tab
+        return true
+      });
+  },
+  watch: {
+  },
   methods: {},
 };
 </script>

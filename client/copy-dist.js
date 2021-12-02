@@ -77,7 +77,7 @@ static const long font_woff_length = ${font_woff_length};
    
     console.log("Đang ghi file")
 
-    fs.writeFile('../device/espVuejs/src/dist.h', content, 'utf8',async ()=>{
+    fs.writeFile('../device/src/core/voca_dist.h', content, 'utf8',async ()=>{
         console.log("Hoàn tất")
         
     })
