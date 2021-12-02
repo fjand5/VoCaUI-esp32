@@ -1,127 +1,240 @@
 #pragma once
-#define STORE_FILE_NAME "/store"
-#include <ArduinoJson.h>
+#define CONFIG_FILE "/config.txt"
 #include "FS.h"
-#if defined(ESP8266)
-#include <FILE_SYS.h>
-#define FILE_SYS LittleFS
-#elif defined(ESP32)
-#include "SPIFFS.h"
-#define FILE_SYS SPIFFS
-#endif
+#include <LITTLEFS.h>
 #include <map>
 #include <list>
+#include <WS2812FX.h>
 
-typedef void (*OnStoreChange)(String, String, bool);
-std::list < OnStoreChange > OnStoreChanges;
-
-void setOnStoreChange(OnStoreChange cb){
-  OnStoreChanges.push_front(cb);
+void saveConfigFile();
+void setValue(String key, String value, bool save = true);
+std::map<String, String> ConfigContent;
+typedef void (*configChangeCallback)(String, String);
+std::list<configChangeCallback> onStoreChanges;
+SemaphoreHandle_t spiffs_sem;
+SemaphoreHandle_t configContent_sem;
+void setOnStoreChange(void (*func)(String key, String value))
+{
+  onStoreChanges.push_front(func);
 }
-
-std::map <String, String> Store;
-
-bool loadConfig() {
-  File configFile = FILE_SYS.open(STORE_FILE_NAME, "r");
-  if (!configFile) {
-    Serial.println("Failed to open config file");
-    return false;
-  }
-
-  size_t size = configFile.size();
-
-  // Allocate a buffer to store contents of the file.
-  std::unique_ptr<char[]> buf(new char[size]);
-
-  // We don't use String here because ArduinoJson library requires the input
-  // buffer to be mutable. If you don't use ArduinoJson, you may as well
-  // use configFile.readString instead.
-  configFile.readBytes(buf.get(), size);
-
-  DynamicJsonDocument doc(10000);
-  auto error = deserializeJson(doc, buf.get());
-  JsonObject objData;
-  if (error) {
-    objData = doc.to<JsonObject>();
-    Serial.println("Failed to parse config file");
-  }
-  objData = doc.as<JsonObject>();
-  for (JsonPair kv : objData) {
-      Store[kv.key().c_str()] = kv.value().as<char*>();
-  }
-  Serial.println("Store content: ");
-  serializeJsonPretty(doc, Serial);
-  return true;
-}
-
-bool saveConfig() {
-  DynamicJsonDocument doc(10000);
-  JsonObject objData = doc.to<JsonObject>();
-
-  
-  for (auto const& item : Store)
+// Mỗi dòng là một phần tử (một cặp key value) (key):(value)\n
+void loadFileIntoConfig(String content)
+{
+  log_d("%s", content.c_str());
+  configContent_sem = xSemaphoreCreateBinary();
+  while (content.indexOf("\n") >= 0)
   {
-    objData[item.first] = item.second;
+    String curLine = content.substring(0, content.indexOf("\n"));
+    String key = curLine.substring(0, content.indexOf("="));
+    String value = curLine.substring(content.indexOf("=") + 1);
+    ConfigContent[key] = value;
+    content.remove(0, curLine.length() + 1);
   }
-
-  File configFile = FILE_SYS.open(STORE_FILE_NAME, "w");
-  if (!configFile) {
-    Serial.println("Failed to open config file for writing");
-    return false;
-  }
-
-  serializeJson(doc, configFile);
-  return true;
+  xSemaphoreGive(configContent_sem);
+  xEventGroupSetBits(system_status, FLAG_INITIALIZED_STORE);
 }
-bool checkKey(String key){
-  if (Store.find(key) != Store.end())
+// Kiểm tra key có tồn tại không
+bool checkKey(String key)
+{
+  if (xSemaphoreTake(configContent_sem, portMAX_DELAY) == pdTRUE)
   {
-    return true;
+    bool ret = ConfigContent.find(key) != ConfigContent.end();
+    xSemaphoreGive(configContent_sem);
+    return ret;
   }
   return false;
 }
-void setValue(String key, String val, bool save = false){
-  bool isChange = Store[key] != val;
-  Store[key] = val;
-  if(save)
-    saveConfig();
 
-  
-  for (auto const& item : OnStoreChanges){
-      if(item != NULL)
-          item(key, val, isChange);
-  }
-  
-}
-
-String getValue(String key, String def = ""){
-  if(checkKey(key))
-    return Store[key];
-  return def;
-}
-const char * getValueByCStr(String key){
-  unsigned int len = Store[key].length();
-  char * ret = new char[len+1]();
-  Store[key].toCharArray(ret, len+1);
-  return ret;
-}
-void setupStore() {
-  Serial.println("");
-  delay(1000);
-  Serial.println("Mounting FS...");
-
-  if (!FILE_SYS.begin()) {
-    Serial.println("Failed to mount file system");
-    FILE_SYS.format();
-    Serial.println("Try formatting...");
-    if (!FILE_SYS.begin()) {
-      return;
+// Lấy giá trị của Key
+String getValue(String key, String def = "", bool setDefaultTokey = true)
+{
+  if (checkKey(key))
+  {
+    if (xSemaphoreTake(configContent_sem, portMAX_DELAY) == pdTRUE)
+    {
+      String ret = ConfigContent[key];
+      xSemaphoreGive(configContent_sem);
+      return ret;
     }
   }
-  Serial.println("Mounted");
-  if (!loadConfig()) {
-    Serial.println("Failed to load config");
-  } else {
-    Serial.println("Config loaded");
+  else
+  {
+    if (setDefaultTokey)
+    {
+      setValue(key, def, true);
+    }
+    return def;
   }
+}
+char *getValueByCStr(String key, String def = "", bool setDefaultTokey = true)
+{
+  char *ret;
+
+  if (checkKey(key))
+  {
+    String tmp;
+    if (xSemaphoreTake(configContent_sem, portMAX_DELAY) == pdTRUE)
+    {
+      tmp = ConfigContent[key];
+      xSemaphoreGive(configContent_sem);
+    }
+    ret = new char[tmp.length() + 1];
+    strcpy(ret, tmp.c_str());
+    return ret;
+  }
+  else
+  {
+    if (setDefaultTokey)
+    {
+      setValue(key, def, true);
+    }
+    String tmp = def;
+    ret = new char[tmp.length() + 1];
+    strcpy(ret, tmp.c_str());
+    return ret;
+  }
+}
+// Lấy toàn bộ file content
+String getValuesByString()
+{
+  String ret = "";
+  if (xSemaphoreTake(configContent_sem, portMAX_DELAY) == pdTRUE)
+  {
+    for (std::pair<String, String> e : ConfigContent)
+    {
+      String k = e.first;
+      String v = e.second;
+      ret += k + "=" + v + "\n";
+    }
+    xSemaphoreGive(configContent_sem);
+  }
+  return ret;
+}
+String getValuesByJson()
+{
+  DynamicJsonDocument doc(8192);
+  JsonObject obj = doc.to<JsonObject>();
+  String ret;
+
+  if (xSemaphoreTake(configContent_sem, portMAX_DELAY) == pdTRUE)
+  {
+    for (std::pair<String, String> e : ConfigContent)
+    {
+      String k = e.first;
+      String v = e.second;
+      obj[k] = v;
+    }
+    xSemaphoreGive(configContent_sem);
+  }
+  serializeJson(obj, ret);
+  return ret;
+}
+// Gán giá trị cho key
+void setValue(String key, String value, bool save)
+{
+
+  bool noChange = ConfigContent[key] == value;
+  if (!noChange)
+  {
+    if (key.indexOf("=") >= 0 || key.indexOf("\n") >= 0 || value.indexOf("\n") >= 0)
+      return;
+    if (xSemaphoreTake(configContent_sem, portMAX_DELAY) == pdTRUE)
+    {
+      ConfigContent[key] = value;
+      xSemaphoreGive(configContent_sem);
+    }
+  }
+
+  for (auto onStoreChange = onStoreChanges.begin();
+       onStoreChange != onStoreChanges.end();
+       ++onStoreChange)
+  {
+    if ((*onStoreChange) != NULL)
+    {
+      (*onStoreChange)(key, value);
+    }
+  }
+
+  log_d("key: %s; value: %s; save: %d; noChange: %d", key.c_str(), value.c_str(), save, noChange);
+  // nếu không yêu cầu lưu vào flash hoặc giá trị như cũ
+  if (!save || noChange)
+  {
+    return;
+  }
+  saveConfigFile();
+}
+
+void saveConfigFile()
+{
+  if (xSemaphoreTake(spiffs_sem, portMAX_DELAY) == pdTRUE)
+  {
+  REOPEN:
+    File cfg_file = LITTLEFS.open(CONFIG_FILE, "w");
+    if (!cfg_file)
+    {
+      cfg_file.close();
+      delay(100);
+      log_e("can't open file, reopening...");
+      LITTLEFS.end();
+      LITTLEFS.begin();
+      goto REOPEN;
+    }
+    if (xSemaphoreTake(configContent_sem, portMAX_DELAY) == pdTRUE)
+    {
+      for (std::pair<String, String> e : ConfigContent)
+      {
+        String k = e.first;
+        String v = e.second;
+        cfg_file.print(k + "=" + v + "\n");
+      }
+      xSemaphoreGive(configContent_sem);
+    }
+
+    cfg_file.close();
+    xSemaphoreGive(spiffs_sem);
+  }
+}
+// Khởi tạo
+void setupStore()
+{
+  spiffs_sem = xSemaphoreCreateBinary();
+  if (!LITTLEFS.begin())
+  {
+    log_d("Can't mount LITTLEFS, Try format");
+    LITTLEFS.format();
+    if (!LITTLEFS.begin())
+    {
+      log_d("Can't mount SPIFFS");
+      return;
+    }
+    else
+    {
+      log_d("SPIFFS mounted");
+      xSemaphoreGive(spiffs_sem);
+    }
+  }
+  else
+  {
+    log_d("SPIFFS mounted ");
+    xSemaphoreGive(spiffs_sem);
+  }
+  if (xSemaphoreTake(spiffs_sem, portMAX_DELAY) == pdTRUE)
+  {
+    File cfg_file = LITTLEFS.open(CONFIG_FILE, "r");
+    if (cfg_file)
+    {
+      String tmp = cfg_file.readString();
+      loadFileIntoConfig(tmp);
+    }
+    else
+    {
+      LITTLEFS.open(CONFIG_FILE, "a");
+    }
+    cfg_file.close();
+    xSemaphoreGive(spiffs_sem);
+  }
+}
+
+void loopConfig()
+{
 }

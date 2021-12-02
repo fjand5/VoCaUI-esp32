@@ -1,6 +1,11 @@
 #pragma once
 #include <Arduino.h>
-#define FLAG_CONNECTED_STA (1<<0)
+#define FLAG_CONNECTED_STA (1 << 0)
+#define FLAG_INITIALIZED_STORE (2 << 0)
+
+#define WAIT_FLAG_SET(flag) xEventGroupWaitBits( system_status, flag, pdFALSE, pdFALSE, portMAX_DELAY)
+#define SET_FLAG(flag) xEventGroupSetBits(system_status, flag)
+
 EventGroupHandle_t system_status;
 void settupStatus()
 {
@@ -17,6 +22,5 @@ void settupStatus()
     {
         /* The event group was created. */
         log_d("created system_status");
-
     }
 }

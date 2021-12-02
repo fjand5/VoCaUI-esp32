@@ -9,22 +9,28 @@
 void scanWifi();
 void setWifi();
 void getWifi();
-void WiFiStationDisconnected(WiFiEvent_t event, WiFiEventInfo_t info){
+void WiFiStationDisconnected(WiFiEvent_t event, WiFiEventInfo_t info)
+{
+  SET_FLAG(FLAG_CONNECTED_STA);
   if (checkKey("_ssid") && checkKey("_sspw"))
   {
     WiFi.begin(getValueByCStr("_ssid"), getValueByCStr("_sspw"));
-  // WiFi.begin("Vong Cat-Hide", "78787878");
+    // WiFi.begin("Vong Cat-Hide", "78787878");
 
     while (WiFi.status() != WL_CONNECTED && millis() < 30000)
     {
       delay(500);
       Serial.print(".");
     }
+    if (WiFi.status() == WL_CONNECTED)
+    {
+      SET_FLAG(FLAG_CONNECTED_STA);
+    }
   }
-
 }
 void setupWifi(void)
 {
+  WAIT_FLAG_SET(FLAG_INITIALIZED_STORE);
   WiFi.mode(WIFI_AP_STA);
   if (checkKey("_apid") && checkKey("_appw"))
   {
@@ -33,15 +39,14 @@ void setupWifi(void)
   else
   {
     String mac = WiFi.macAddress();
-    mac.replace(":","");
-    String apid = String(APID) +"-" + mac;
+    mac.replace(":", "");
+    String apid = String(APID) + "-" + mac;
     WiFi.softAP(apid.c_str(), APPW);
   }
+
   if (checkKey("_ssid") && checkKey("_sspw"))
   {
     WiFi.begin(getValueByCStr("_ssid"), getValueByCStr("_sspw"));
-  // WiFi.begin("Vong Cat-Hide", "78787878");
-
     while (WiFi.status() != WL_CONNECTED && millis() < 30000)
     {
       delay(500);
@@ -66,8 +71,9 @@ void setupWifi(void)
     Serial.print("IP address: ");
     Serial.println(WiFi.localIP());
     WiFi.onEvent(WiFiStationDisconnected, SYSTEM_EVENT_STA_DISCONNECTED);
+    SET_FLAG(FLAG_CONNECTED_STA);
   }
-  
+
   addHttpApi("scanWifi", scanWifi);
   addHttpApi("setWifi", setWifi);
   addHttpApi("getWifi", getWifi);
