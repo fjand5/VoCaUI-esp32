@@ -55,10 +55,13 @@
       </el-row>
 
     </el-header>
-    <el-main>   
+    <el-main
+    
+    v-loading="getSending"
+    >   
       <Panel/>           
     </el-main>
-    <el-footer>Footer</el-footer>
+    <el-footer>Footer {{getSending}}</el-footer>
   </el-container>
 </template>
 
@@ -78,7 +81,7 @@ export default {
       Panel
     },
     computed:{
-      ...mapGetters(['getCurrentWifi'])
+      ...mapGetters(['getCurrentWifi','getSending'])
     },
     mounted:function(){
       this.$store.dispatch('updateCurrentWifi')

@@ -5,6 +5,7 @@
 #include <ArduinoJson.h>
 #include "voca_store.h"
 WebServer server(80);
+SemaphoreHandle_t http_api_sem;
 
 typedef void (*Response)(void);
 void comHeader()
@@ -18,7 +19,15 @@ void addHttpApi(String url, Response response)
 {
   if (url.startsWith("/"))
     url = url.substring(1);
-  server.on(String("/api/") + url, response);
+  server.on(String("/api/") + url, [response]()
+            {
+              if (xSemaphoreTake(http_api_sem, portMAX_DELAY) == pdTRUE)
+              {
+                comHeader();
+                response();
+                xSemaphoreGive(http_api_sem);
+              }
+            });
 }
 
 void handleIndex()
@@ -29,7 +38,7 @@ void handleIndex()
 }
 void setupWebserver()
 {
-  
+
   xTaskCreatePinnedToCore(
       [](void *param)
       {
@@ -58,10 +67,13 @@ void setupWebserver()
         server.begin();
         Serial.print("loopWebserver is running on core ");
         Serial.println(xPortGetCoreID());
+        http_api_sem = xSemaphoreCreateBinary();
+        xSemaphoreGive(http_api_sem);
 
         while (1)
         {
           server.handleClient();
+          delay(20);
         }
       },
       "loopWebserver",

@@ -1,28 +1,30 @@
 <template>
   <div class="esp-button">
     <ComponentWrapper
-      :span="props.span"
-      :offset="props.offset"
-      :pull="props.pull"
-      :push="props.push"
+      :span="compt.props.span"
+      :offset="compt.props.offset"
+      :pull="compt.props.pull"
+      :push="compt.props.push"
     >
+    {{getData[compt.espKey]}}
       <el-button
-        :size="props.size || 'small'"
-        :type="props.type || 'primary'"
-        :round="props.round || true"
-        @click="sendCommand()"
-        >{{ props.name }}</el-button
+        :size="compt.props.size || 'medium'"
+        :type="compt.props.type || 'primary'"
+        :round="compt.props.round || true"
+        @click="$sendCommand()"
+        >{{ compt.props.name }} </el-button
       >
     </ComponentWrapper>
   </div>
 </template>
 
 <script>
+import { mapGetters } from "vuex";
 import ComponentWrapper from "./ComponentWrapper.vue";
 export default {
   name: "EspButton",
   props: {
-    props: Object,
+    compt: Object,
   },
   data: function () {
     return {
@@ -32,7 +34,22 @@ export default {
   components: {
     ComponentWrapper,
   },
+  computed: {
+    ...mapGetters(["getData"]),
+  },
+  watch:{
+getData:function(n){
+  // if(n[this.compt.espKey] == )
+  console.log(n)
+}
+  },
   methods: {
+    // sendCommand: function () {
+    //   this.$store.dispatch("sendCommand", {
+    //     espKey: this.compt.espKey,
+    //     espValue: null,
+    //   });
+    // },
   },
 };
 </script>

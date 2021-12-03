@@ -110,11 +110,10 @@ String getValuesByString()
   }
   return ret;
 }
-String getValuesByJson()
+DynamicJsonDocument getValuesByJson()
 {
   DynamicJsonDocument doc(8192);
   JsonObject obj = doc.to<JsonObject>();
-  String ret;
 
   if (xSemaphoreTake(configContent_sem, portMAX_DELAY) == pdTRUE)
   {
@@ -126,8 +125,7 @@ String getValuesByJson()
     }
     xSemaphoreGive(configContent_sem);
   }
-  serializeJson(obj, ret);
-  return ret;
+  return doc;
 }
 // Gán giá trị cho key
 void setValue(String key, String value, bool save)

@@ -3,6 +3,7 @@ let socket = WebSocket.prototype //
 const command = {
     state: () => ({
         data: {},
+        sending: false,
         render: [
             {
                 type: "EspButton",
@@ -13,7 +14,7 @@ const command = {
                     name: "nút 1",
                     description: "Bấm vào để bật",
                     span: {
-                    
+
                     },
                 },
             },
@@ -25,7 +26,7 @@ const command = {
                 props: {
                     name: "nút 2",
                     span: {
-                    
+
                     },
                 },
             },
@@ -36,17 +37,6 @@ const command = {
                 row: 0,
                 props: {
                     name: "nút 3",
-                    span: {
-                    },
-                },
-            },
-            {
-                type: "EspSwitch",
-                tab: "nhà hàng",
-                row: 1,
-                espKey: "swt_2",
-                props: {
-                    name: "sw 2",
                     span: {
                     },
                 },
@@ -65,95 +55,55 @@ const command = {
     }),
     mutations: {
         setData: function (state, data) {
-            state.data = { ...state.data, ...JSON.parse(data) }
-        }
+            let objData = JSON.parse(data)
+            state.data = { ...state.data, ...objData }
+        },
+        setSending: function (state, status) {
+            state.sending = status
+        },
     },
     actions: {
         initCommand: function (context) {
-            // socket = new WebSocket('ws://' + "192.168.2.101" + ':81')
-            socket = new WebSocket('ws://' + window.location.hostname + ':81');
+            socket = new WebSocket('ws://' + "192.168.1.9" + ':81')
+            // socket = new WebSocket('ws://' + window.location.hostname + ':81');
 
             socket.addEventListener('message', function (event) {
                 context.commit("setData", event.data)
+                context.commit("setSending", false)
                 console.log(event.data)
             });
             socket.addEventListener('open', function () {
-                let obj = {
-                    cmd: "initValueLed"
-                }
-                socket.send(JSON.stringify(obj))
+                // let obj = {
+                //     cmd: "gal"
+                // }
+                // socket.send(JSON.stringify(obj))
             });
         },
-        setBrightness: function (context, val) {
+        sendCommand: function (context, { espKey, espValue }) {
+            console.log("sendCommand");
             let obj = {
-                cmd: "setBrightness",
-                val
+                cmd: "exe",
+                espKey,
+                espValue
             }
             if (socket.readyState == WebSocket.OPEN)
                 socket.send(JSON.stringify(obj))
-        },
-        setColor1: function (context, val) {
-            let obj = {
-                cmd: "setColor1",
-                val
-            }
-            if (socket.readyState == WebSocket.OPEN)
-                socket.send(JSON.stringify(obj))
-        },
-        setColor2: function (context, val) {
-            let obj = {
-                cmd: "setColor2",
-                val
-            }
-            if (socket.readyState == WebSocket.OPEN)
-                socket.send(JSON.stringify(obj))
-        },
-        setColor3: function (context, val) {
-            let obj = {
-                cmd: "setColor3",
-                val
-            }
-            if (socket.readyState == WebSocket.OPEN)
-                socket.send(JSON.stringify(obj))
-        },
-        nextMode: function () {
-            let obj = {
-                cmd: "nextMode"
-            }
-            if (socket.readyState == WebSocket.OPEN)
-                socket.send(JSON.stringify(obj))
-        },
-        preMode: function () {
-            let obj = {
-                cmd: "preMode"
-            }
-            if (socket.readyState == WebSocket.OPEN)
-                socket.send(JSON.stringify(obj))
+            context.commit("setSending", true)
+
+
         },
 
 
     },
     getters: {
-        getMode: function (state) {
-            return state.data.mode
+        getData: function (state) {
+            return state.data
         },
         getRender: function (state) {
             return state.render
         },
-        getSpeed: function (state) {
-            return state.data.speed
-        },
-        getBrightness: function (state) {
-            return state.data.brightness
-        },
-        getColor1: function (state) {
-            return state.data.color1
-        },
-        getColor2: function (state) {
-            return state.data.color2
-        },
-        getColor3: function (state) {
-            return state.data.color3
+        getSending: function (state) {
+            return state.sending
         },
     }
 }

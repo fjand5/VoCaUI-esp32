@@ -13,7 +13,7 @@
               <component
                 :key="index"
                 :is="compt.type"
-                :props="compt.props"
+                :compt="compt"
               ></component>
             </template>
           </el-row>

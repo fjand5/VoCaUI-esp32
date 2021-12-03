@@ -3,28 +3,29 @@ import MqttSetting from './views/MqttSetting'
 
 import store from './store';
 let ServicePlugin =
-{ 
-  
-  install:function (Vue) {
+{
+
+  install: function (Vue) {
 
     Vue.prototype.$showWifiSelector = function () {
       var ComponentClass = Vue.extend(WifiSelector)
-      var instance = new ComponentClass({store: store})
+      var instance = new ComponentClass({ store: store })
       instance.$mount()
     }
     Vue.prototype.$showMqttSetting = function () {
       var ComponentClass = Vue.extend(MqttSetting)
-      var instance = new ComponentClass({store: store})
+      var instance = new ComponentClass({ store: store })
       instance.$mount()
     }
-    Vue.$sendCommand = function () {
-      return this.$loading({
-        lock: true,
-        text: 'please wait...',
-        spinner: 'el-icon-loading',
-        background: 'rgba(0, 0, 0, 0.6)'
-      });
+    Vue.prototype.$sendCommand = function () {
+      let compt = this.compt
+      this.$store.dispatch('sendCommand',
+        {
+          espKey: compt.espKey,
+          espValue: compt.espValue
+        }
+      )
     }
   }
-} 
+}
 export default ServicePlugin

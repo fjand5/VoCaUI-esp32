@@ -5,7 +5,7 @@ WebSocketsServer webSocket = WebSocketsServer(81);
 
 #include <list>
 
-typedef void (*OnWSTextIncome)(String);
+typedef void (*OnWSTextIncome)(JsonObject);
 std::list<OnWSTextIncome> OnWSTextIncomes;
 
 void setOnWSTextIncome(OnWSTextIncome cb)
@@ -14,41 +14,44 @@ void setOnWSTextIncome(OnWSTextIncome cb)
 }
 void onConnect(uint8_t num)
 {
-    log_d("onConnect: %d", num);
-    //   DynamicJsonDocument doc(10000);
-    //   JsonObject objData = doc.to<JsonObject>();
-    //   for (auto const& item : Store)
-    //   {
-    //     objData[item.first] = item.second;
-    //   }
-    //   String ret;
+    String ret= "";
+    DynamicJsonDocument doc = getValuesByJson();
+    serializeJson(doc, ret);
+    webSocket.sendTXT(num, ret);
 
-    //   serializeJson(doc, ret);
-    //   webSocket.sendTXT(num, ret);
 }
 void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t length)
 {
     String data;
-
     switch (type)
     {
     case WStype_DISCONNECTED:
         break;
     case WStype_CONNECTED:
+    {
+
         onConnect(num);
         break;
+    }
     case WStype_TEXT:
-        for (size_t i = 0; i < length; i++)
+    {
+
+        DynamicJsonDocument _doc(10000);
+        deserializeJson(_doc, payload, length);
+        JsonObject obj = _doc.as<JsonObject>();
+        if (obj["exe"])
         {
-            data += (char)payload[i];
+            for (auto const &item : OnWSTextIncomes)
+            {
+                if (item != NULL)
+                    item(obj);
+            }
         }
-        log_d("WStype_TEXT: %s", data.c_str());
-        for (auto const &item : OnWSTextIncomes)
-        {
-            if (item != NULL)
-                item(data);
-        }
+        String ret;
+        serializeJson(_doc, ret);
+        webSocket.sendTXT(num, ret.c_str());
         break;
+    }
     case WStype_BIN:
         break;
     case WStype_ERROR:
@@ -67,7 +70,6 @@ void setupWebSocket()
         {
             webSocket.begin();
             webSocket.onEvent(webSocketEvent);
-	        webSocket.setAuthorization("user", "Password");
             while (1)
             {
                 webSocket.loop();
