@@ -29,6 +29,7 @@ export default {
   data: function () {
     return {
       sending: false,
+      value: null
     };
   },
   components: {

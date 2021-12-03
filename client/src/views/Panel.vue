@@ -36,7 +36,7 @@ export default {
   },
   components: {
     EspButton,
-    EspSwitch
+    EspSwitch,
   },
   computed: {
     ...mapGetters(["getRender"]),
@@ -55,13 +55,14 @@ export default {
     },
   },
   mounted: function () {
-    this.getRender.some((elm) => {
-        this.selectedTab = elm.tab
-        return true
+    this.$store.dispatch("requireRenderData").then(() => {
+      this.getRender.some((elm) => {
+        this.selectedTab = elm.tab;
+        return true;
       });
+    });
   },
-  watch: {
-  },
+  watch: {},
   methods: {},
 };
 </script>

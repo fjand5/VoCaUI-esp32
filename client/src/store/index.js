@@ -4,6 +4,8 @@ import wifi from './modules/wifi'
 import mqtt from './modules/mqtt'
 import system from './modules/system'
 import command from './modules/command'
+import render from './modules/render'
+
 
 Vue.use(Vuex)
 
@@ -12,7 +14,8 @@ const store = new Vuex.Store({
         wifi,
         mqtt,
         system,
-        command
+        command,
+        render
     ]
 })
 export default store

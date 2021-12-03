@@ -4,54 +4,6 @@ const command = {
     state: () => ({
         data: {},
         sending: false,
-        render: [
-            {
-                type: "EspButton",
-                tab: "nhà hàng",
-                row: 0,
-                espKey: "btn_1",
-                props: {
-                    name: "nút 1",
-                    description: "Bấm vào để bật",
-                    span: {
-
-                    },
-                },
-            },
-            {
-                type: "EspButton",
-                tab: "nhà hàng",
-                row: 0,
-                espKey: "btn_2",
-                props: {
-                    name: "nút 2",
-                    span: {
-
-                    },
-                },
-            },
-            {
-                type: "EspButton",
-                tab: "nhà hàng",
-                espKey: "btn_3",
-                row: 0,
-                props: {
-                    name: "nút 3",
-                    span: {
-                    },
-                },
-            },
-            {
-                type: "EspButton",
-                tab: "bếp",
-                row: 0,
-                props: {
-                    name: "nút 3",
-                    span: {
-                    },
-                },
-            },
-        ]
     }),
     mutations: {
         setData: function (state, data) {
@@ -64,7 +16,7 @@ const command = {
     },
     actions: {
         initCommand: function (context) {
-            socket = new WebSocket('ws://' + "192.168.1.9" + ':81')
+            socket = new WebSocket('ws://' + "192.168.2.101" + ':81')
             // socket = new WebSocket('ws://' + window.location.hostname + ':81');
 
             socket.addEventListener('message', function (event) {
@@ -98,9 +50,6 @@ const command = {
     getters: {
         getData: function (state) {
             return state.data
-        },
-        getRender: function (state) {
-            return state.render
         },
         getSending: function (state) {
             return state.sending

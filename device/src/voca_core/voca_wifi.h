@@ -4,6 +4,8 @@
 #include "voca_store.h"
 #include "voca_webserver.h"
 #include "voca_status.h"
+#include "voca_render.h"
+
 #define APID "vocaui"
 #define APPW "12345678"
 void scanWifi();
@@ -31,6 +33,39 @@ void WiFiStationDisconnected(WiFiEvent_t event, WiFiEventInfo_t info)
 void setupWifi(void)
 {
   WAIT_FLAG_SET(FLAG_INITIALIZED_STORE);
+  renderButton("wifi", "btn_1", R"({
+    "name":"nút 1",
+    "description":"",
+    "span":{
+      
+    }
+  })",
+               [](String key, String value)
+               {
+                 log_d("%s: %s",key.c_str(),value.c_str());
+               });
+  renderButton("wifi", "btn_2", R"({
+    "name":"nút 1",
+    "description":"",
+    "span":{
+      
+    }
+  })",
+               [](String key, String value)
+               {
+                 log_d("%s: %s",key.c_str(),value.c_str());
+               });
+  renderButton("wifi", "btn_3", R"({
+    "name":"nút 1",
+    "description":"",
+    "span":{
+      
+    }
+  })",
+               [](String key, String value)
+               {
+                 log_d("%s: %s",key.c_str(),value.c_str());
+               });
   WiFi.mode(WIFI_AP_STA);
   if (checkKey("_apid") && checkKey("_appw"))
   {

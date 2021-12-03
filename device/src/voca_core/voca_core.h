@@ -4,6 +4,7 @@
 #include "voca_store.h"
 #include "voca_system.h"
 #include "voca_websocket.h"
+#include "voca_render.h"
 
 void setup_voca()
 {
@@ -13,5 +14,6 @@ void setup_voca()
     setupWebserver();
     setupWebSocket();
     setupSystem();
+    setupRender();
     
 }

@@ -22,7 +22,7 @@ let ServicePlugin =
       this.$store.dispatch('sendCommand',
         {
           espKey: compt.espKey,
-          espValue: compt.espValue
+          espValue: this.value
         }
       )
     }

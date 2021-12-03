@@ -39,7 +39,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t length)
         DynamicJsonDocument _doc(10000);
         deserializeJson(_doc, payload, length);
         JsonObject obj = _doc.as<JsonObject>();
-        if (obj["exe"])
+        if (obj["cmd"] == "exe")
         {
             for (auto const &item : OnWSTextIncomes)
             {
