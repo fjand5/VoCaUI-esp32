@@ -53,6 +53,9 @@ void setupWifi(void)
   })",
                [](String key, String value)
                {
+                 int num = getValue(key,"0").toInt();
+                 num++;
+                 setValue(key,String(num));
                  log_d("%s: %s",key.c_str(),value.c_str());
                });
   renderButton("wifi", "btn_3", R"({

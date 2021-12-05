@@ -47,8 +47,13 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t length)
                     item(obj);
             }
         }
+        // dùng luôn _doc để lấy giá trị 
         String ret;
+        String _key = obj["espKey"];
+        obj = _doc.to<JsonObject>();
+        getValueByObject(_key, obj);
         serializeJson(_doc, ret);
+        log_d("===== %s",ret.c_str());
         webSocket.sendTXT(num, ret.c_str());
         break;
     }

@@ -66,6 +66,12 @@ String getValue(String key, String def = "", bool setDefaultTokey = true)
     return def;
   }
 }
+void getValueByObject(String key, JsonObject objectValue, String def = "", bool setDefaultTokey = true)
+{
+  String value = getValue(key, def, setDefaultTokey);
+  objectValue[key] = value;
+
+}
 char *getValueByCStr(String key, String def = "", bool setDefaultTokey = true)
 {
   char *ret;
