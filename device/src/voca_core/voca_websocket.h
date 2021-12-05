@@ -14,11 +14,10 @@ void setOnWSTextIncome(OnWSTextIncome cb)
 }
 void onConnect(uint8_t num)
 {
-    String ret= "";
-    DynamicJsonDocument doc = getValuesByJson();
-    serializeJson(doc, ret);
-    webSocket.sendTXT(num, ret);
-
+    // String ret = "";
+    // DynamicJsonDocument doc = getValuesByJson();
+    // serializeJson(doc, ret);
+    // webSocket.sendTXT(num, ret);
 }
 void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t length)
 {
@@ -39,6 +38,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t length)
         DynamicJsonDocument _doc(10000);
         deserializeJson(_doc, payload, length);
         JsonObject obj = _doc.as<JsonObject>();
+        String ret;
         if (obj["cmd"] == "exe")
         {
             for (auto const &item : OnWSTextIncomes)
@@ -46,15 +46,18 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t length)
                 if (item != NULL)
                     item(obj);
             }
+            String _key = obj["espKey"];
+            obj = _doc.to<JsonObject>();
+            getValueByObject(_key, obj);
         }
-        // dùng luôn _doc để lấy giá trị 
-        String ret;
-        String _key = obj["espKey"];
-        obj = _doc.to<JsonObject>();
-        getValueByObject(_key, obj);
+        else if (obj["cmd"] == "gal")
+        {
+            obj = _doc.to<JsonObject>();
+            getValuesByObject(obj);
+        }
+        // dùng luôn _doc để lấy giá trị
         serializeJson(_doc, ret);
-        log_d("===== %s",ret.c_str());
-        webSocket.sendTXT(num, ret.c_str());
+        webSocket.broadcastTXT(ret.c_str());
         break;
     }
     case WStype_BIN:

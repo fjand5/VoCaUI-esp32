@@ -29,7 +29,8 @@ export default {
   data: function () {
     return {
       sending: false,
-      value: null
+      clientValue: "",
+      espValue: null
     };
   },
   components: {

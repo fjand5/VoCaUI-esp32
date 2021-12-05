@@ -116,22 +116,18 @@ String getValuesByString()
   }
   return ret;
 }
-DynamicJsonDocument getValuesByJson()
+void getValuesByObject(JsonObject objectValues)
 {
-  DynamicJsonDocument doc(8192);
-  JsonObject obj = doc.to<JsonObject>();
-
   if (xSemaphoreTake(configContent_sem, portMAX_DELAY) == pdTRUE)
   {
     for (std::pair<String, String> e : ConfigContent)
     {
       String k = e.first;
       String v = e.second;
-      obj[k] = v;
+      objectValues[k] = v;
     }
     xSemaphoreGive(configContent_sem);
   }
-  return doc;
 }
 // Gán giá trị cho key
 void setValue(String key, String value, bool save)

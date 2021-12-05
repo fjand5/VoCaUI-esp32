@@ -1,8 +1,7 @@
 import api from '../../api/http'
 
 const render = {
-    state: () => ({
-        render: [
+    state: () => ({render: [
         {
             type: "EspButton",
             tab: "nhà hàng",
@@ -29,9 +28,21 @@ const render = {
             },
         },
         {
-            type: "EspButton",
+            type: "EspSwitch",
             tab: "nhà hàng",
-            espKey: "btn_3",
+            espKey: "swt_4",
+            row: 0,
+            props: {
+                name: "nút 3",
+                round: true,
+                span: {
+                },
+            },
+        },
+        {
+            type: "EspSwitch",
+            tab: "nhà hàng",
+            espKey: "swt_3",
             row: 0,
             props: {
                 name: "nút 3",
@@ -40,7 +51,7 @@ const render = {
             },
         },
         {
-            type: "EspButton",
+            type: "EspSwitch",
             tab: "bếp",
             row: 0,
             props: {
@@ -59,7 +70,7 @@ const render = {
     },
     actions: {
         requireRenderData: function(context){
-            return api.get('/render')   
+            return api.get('api/render')   
             .then((data)=>{
                 console.log(data)
                 context.commit('setRender', data)

@@ -69,6 +69,18 @@ void setupWifi(void)
                {
                  log_d("%s: %s",key.c_str(),value.c_str());
                });
+  renderSwitch("wifi", "swt_1", R"({
+    "name":"công tắc 1",
+    "description":"",
+    "span":{
+      
+    }
+  })",
+               [](String key, String value)
+               {
+                 log_d("renderSwitch %s: %s",key.c_str(),value.c_str());
+                 setValue(key,value);
+               });
   WiFi.mode(WIFI_AP_STA);
   if (checkKey("_apid") && checkKey("_appw"))
   {

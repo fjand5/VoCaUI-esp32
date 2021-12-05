@@ -8,7 +8,7 @@ const system = {
     },
     actions: {
         reset: function(){
-            return api.get('/api/reset/')
+            return api.get('/api/reset')
         },
     },
     getters: {

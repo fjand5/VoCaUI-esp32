@@ -4,7 +4,6 @@
 
 #include <ArduinoJson.h>
 #include "voca_store.h"
-#include "voca_render.h"
 
 WebServer server(80);
 SemaphoreHandle_t http_api_sem;
@@ -65,11 +64,6 @@ void setupWebserver()
                     comHeader();
                     server.sendHeader("Content-Encoding", "gzip");
                     server.send_P(200, "application/javascript", favicon_ico, favicon_ico_length);
-                  });
-        server.on("/render", []()
-                  {
-                    comHeader();
-                    server.send_P(200, "application/json", getRender().c_str());
                   });
         server.begin();
         Serial.print("loopWebserver is running on core ");

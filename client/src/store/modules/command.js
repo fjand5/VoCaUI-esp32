@@ -16,23 +16,29 @@ const command = {
     },
     actions: {
         initCommand: function (context) {
-            socket = new WebSocket('ws://' + "192.168.2.101" + ':81')
-            // socket = new WebSocket('ws://' + window.location.hostname + ':81');
+            // socket = new WebSocket('ws://' + "192.168.1.8" + ':81')
+            socket = new WebSocket('ws://' + window.location.hostname + ':81');
 
             socket.addEventListener('message', function (event) {
+            console.log("addEventListener: ", event.data);
+
                 context.commit("setData", event.data)
                 context.commit("setSending", false)
-                console.log(event.data)
             });
             socket.addEventListener('open', function () {
-                // let obj = {
-                //     cmd: "gal"
-                // }
-                // socket.send(JSON.stringify(obj))
+                let obj = {
+                    cmd: "gal"
+                }
+                socket.send(JSON.stringify(obj))
             });
         },
         sendCommand: function (context, { espKey, espValue }) {
-            console.log("sendCommand");
+            
+            if(espValue != undefined)
+                espValue = espValue.toString()
+            else
+                espValue = ""
+            console.log("sendCommand: ",espValue);
             let obj = {
                 cmd: "exe",
                 espKey,
@@ -41,8 +47,6 @@ const command = {
             if (socket.readyState == WebSocket.OPEN)
                 socket.send(JSON.stringify(obj))
             context.commit("setSending", true)
-
-
         },
 
 
