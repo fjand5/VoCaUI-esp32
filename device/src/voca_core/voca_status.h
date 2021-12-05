@@ -2,6 +2,8 @@
 #include <Arduino.h>
 #define FLAG_CONNECTED_STA (1 << 0)
 #define FLAG_INITIALIZED_STORE (2 << 0)
+#define FLAG_WEBSERVER_READY (3 << 0)
+#define FLAG_WEBSOCKET_READY (4 << 0)
 
 #define WAIT_FLAG_SET(flag) xEventGroupWaitBits( system_status, flag, pdFALSE, pdFALSE, portMAX_DELAY)
 #define SET_FLAG(flag) xEventGroupSetBits(system_status, flag)

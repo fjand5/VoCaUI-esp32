@@ -85,7 +85,6 @@ export default {
     },
     mounted:function(){
       this.$store.dispatch('updateCurrentWifi')
-      this.$store.dispatch('initCommand')
 
     },
     methods: {

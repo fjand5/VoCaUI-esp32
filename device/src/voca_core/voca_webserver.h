@@ -70,6 +70,9 @@ void setupWebserver()
         Serial.println(xPortGetCoreID());
         http_api_sem = xSemaphoreCreateBinary();
         xSemaphoreGive(http_api_sem);
+        SET_FLAG(FLAG_WEBSERVER_READY);
+        WAIT_FLAG_SET(FLAG_WEBSERVER_READY | FLAG_WEBSOCKET_READY);
+
 
         while (1)
         {

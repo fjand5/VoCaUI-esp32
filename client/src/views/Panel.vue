@@ -60,6 +60,7 @@ export default {
         this.selectedTab = elm.tab;
         return true;
       });
+      this.$store.dispatch('initCommand')
     });
   },
   watch: {},
