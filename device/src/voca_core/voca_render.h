@@ -46,10 +46,10 @@ void renderComponent(String compt, String tab, String espKey, String props)
   deserializeJson(_docProps, props);
   comptObj["props"] = _docProps.as<JsonObject>();
 }
-// void renderSlider(String tab, String key, String name, String option, EventFunc event = NULL){
-//   addEvent(key, event);
-//   renderComponent("input-slider", tab, key, name, option);
-// }
+void renderSlider(String tab, String espKey, String option, OnEvent event){
+  setOnEvents(espKey, event);
+  renderComponent("EspSlider", tab, espKey, option);
+}
 void renderSwitch(String tab, String espKey, String option, OnEvent event)
 {
   setOnEvents(espKey, event);

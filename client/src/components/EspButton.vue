@@ -33,6 +33,9 @@ export default {
       espValue: null
     };
   },
+  mounted: function(){
+
+  },
   components: {
     ComponentWrapper,
   },

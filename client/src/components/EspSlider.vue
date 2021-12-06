@@ -1,5 +1,5 @@
 <template>
-  <div class="esp-switch">
+  <div class="esp-slider">
     <ComponentWrapper
       :span="compt.props.span"
       :offset="compt.props.offset"
@@ -35,7 +35,7 @@ import { mapGetters } from "vuex";
 
 import ComponentWrapper from "./ComponentWrapper.vue";
 export default {
-  name: "EspSwitch",
+  name: "EspSlider",
   props: {
     compt: Object,
   },
@@ -49,9 +49,6 @@ export default {
   components: {
     ComponentWrapper,
   },
-  mounted:function(){
-  },
-
   methods: {
     sendCommand: function () {
       if(this.espValue != undefined)
@@ -68,17 +65,17 @@ export default {
     ...mapGetters(["getData"]),
   },
   watch: {
-    getData: function (n) {
-      this.espValue = n[this.compt.espKey] == "true"
-      console.log("getData", n);
-    },
+    // getData: function (n) {
+    //   this.espValue = n[this.compt.espKey] == "true"
+    //   console.log("getData", n);
+    // },
   },
 };
 </script>
 <style scoped>
-span{
+/* span{
   margin-right: 20px;
-}
+} */
 .inActive{
   opacity: 0.3;
 }

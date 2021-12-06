@@ -57,7 +57,6 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t length)
             {
                 obj = _doc.to<JsonObject>();
                 getValuesByObject(obj);
-                log_w("get all data =================================");
             }
             // dùng luôn _doc để lấy giá trị
             serializeJson(_doc, ret);

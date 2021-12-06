@@ -9,7 +9,7 @@
       <template v-for="(tab, index) in collectTabs">
         <el-tab-pane :key="index" :label="tab" :name="tab">
           <el-row :gutter="20">
-            <template v-for="(compt, index) in selectedComponents">
+            <template v-for="(compt, index) in getComponentsByTab(tab)">
               <component
                 :key="index"
                 :is="compt.type"
@@ -26,6 +26,7 @@
 <script>
 import EspButton from "../components/EspButton";
 import EspSwitch from "../components/EspSwitch";
+import EspSlider from "../components/EspSlider";
 
 import { mapGetters } from "vuex";
 export default {
@@ -37,6 +38,7 @@ export default {
   components: {
     EspButton,
     EspSwitch,
+    EspSlider
   },
   computed: {
     ...mapGetters(["getRender"]),
@@ -44,12 +46,6 @@ export default {
       let ret = new Set();
       this.getRender.forEach((elm) => {
         ret.add(elm.tab);
-      });
-      return ret;
-    },
-    selectedComponents: function () {
-      let ret = this.getRender.filter((elm) => {
-        return elm.tab == this.selectedTab;
       });
       return ret;
     },
@@ -64,7 +60,14 @@ export default {
     });
   },
   watch: {},
-  methods: {},
+  methods: {
+    getComponentsByTab: function (tab) {
+      let ret = this.getRender.filter((elm) => {
+        return elm.tab == tab;
+      });
+      return ret;
+    },
+  },
 };
 </script>
 <style scoped>
