@@ -6,26 +6,14 @@
       :pull="compt.props.pull"
       :push="compt.props.push"
     >
-    <span>
-    {{compt.props.name}}</span>
-      <el-button-group>
-        <el-button
-          :class="(espValue!= undefined) && (espValue==false) ?'':'inActive'"
-          :round="compt.props.round || false"
-          :size="compt.props.size || 'medium'"
-          :type="compt.props.type || 'primary'"
-        @click="sendCommand()"
-          >off</el-button
-        >
-        <el-button
-          :class="(espValue!= undefined) && (espValue==true)?'':'inActive'"
-          :round="compt.props.round || false"
-          :size="compt.props.size || 'medium'"
-          :type="compt.props.type || 'primary'"
-        @click="sendCommand()"
-          >on</el-button
-        >
-      </el-button-group>
+      <span>{{ compt.props.name }} {{ espValue }}</span>
+      <el-slider
+        @input="sendCommand"
+        v-model="clientValue"
+        :show-input="compt.props.showInput"
+        :debounce="100"
+      ></el-slider>
+      <el-slider disabled v-model="espValue" :debounce="100"></el-slider>
     </ComponentWrapper>
   </div>
 </template>
@@ -42,8 +30,11 @@ export default {
   data: function () {
     return {
       sending: false,
-      espValue: undefined,
-      clientValue: undefined
+      espValue: 0,
+      clientValue: 0,
+
+      debounceTimer: undefined,
+      noSendcommand: false,
     };
   },
   components: {
@@ -51,24 +42,24 @@ export default {
   },
   methods: {
     sendCommand: function () {
-      if(this.espValue != undefined)
-        this.clientValue = !this.espValue
-      else
-        this.clientValue = true
-      this.$sendCommand();
-    },
-    groupClick: function () {
-      console.log("groupClick");
+      clearTimeout(this.debounceTimer);
+      this.debounceTimer = setTimeout(() => {
+        this.$sendCommand();
+      }, 100);
     },
   },
   computed: {
     ...mapGetters(["getData"]),
   },
+  mounted: function () {},
   watch: {
-    // getData: function (n) {
-    //   this.espValue = n[this.compt.espKey] == "true"
-    //   console.log("getData", n);
-    // },
+    getData: function (n) {
+      this.espValue = parseInt(n[this.compt.espKey]);
+      this.clientValue = this.espValue;
+      setTimeout(() => {
+        clearTimeout(this.debounceTimer);
+      }, 90);
+    },
   },
 };
 </script>
@@ -76,7 +67,7 @@ export default {
 /* span{
   margin-right: 20px;
 } */
-.inActive{
+.inActive {
   opacity: 0.3;
 }
 </style>
