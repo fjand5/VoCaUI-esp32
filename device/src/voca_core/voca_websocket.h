@@ -94,7 +94,7 @@ void setupWebSocket()
             }
         },
         "loopSocket",
-        10000,
+        20000,
         NULL,
         2,
         NULL,

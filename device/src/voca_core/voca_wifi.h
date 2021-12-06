@@ -93,6 +93,19 @@ void setupWifi(void)
                  log_d("renderSlider %s: %s",key.c_str(),value.c_str());
                  setValue(key,value);
                });
+  renderSlider("wifi2", "sld_2", R"({
+    "name":"thanh trượt mới",
+    "description":"",
+    "showInput":true,
+    "span":{
+      
+    }
+  })",
+               [](String key, String value)
+               {
+                 log_d("renderSlider %s: %s",key.c_str(),value.c_str());
+                 setValue(key,value);
+               });
   WiFi.mode(WIFI_AP_STA);
   if (checkKey("_apid") && checkKey("_appw"))
   {
