@@ -9,14 +9,19 @@
       <span class="sub-title">{{ compt.props.name }}</span>
       <el-row :gutter="0">
         <el-col :span="20">
-          <el-input :placeholder="compt.props.name" v-model="espValue" clearable>
+          <el-input
+            @focus="editting = true"
+            @blur="blur"
+            :placeholder="compt.props.name"
+            v-model="clientValue"
+          >
           </el-input>
         </el-col>
         <el-col :span="4">
           <el-button
             :type="compt.props.type || 'primary'"
             :round="compt.props.round || false"
-            @click="$sendCommand()"
+            @click="sendCommand()"
           >
             OK
           </el-button>
@@ -38,7 +43,10 @@ export default {
   data: function () {
     return {
       sending: false,
-      espValue: 0,
+      espValue: undefined,
+      clientValue: undefined,
+
+      editting: false,
     };
   },
   components: {
@@ -48,6 +56,12 @@ export default {
     sendCommand: function () {
       this.$sendCommand();
     },
+    blur: function () {
+      setTimeout(() => {
+        this.editting = false;
+        this.clientValue = this.espValue;
+      }, 100);
+    },
   },
   computed: {
     ...mapGetters(["getData"]),
@@ -56,7 +70,7 @@ export default {
   watch: {
     getData: function (n) {
       this.espValue = n[this.compt.espKey];
-
+      if (!this.editting) this.clientValue = this.espValue;
     },
   },
 };

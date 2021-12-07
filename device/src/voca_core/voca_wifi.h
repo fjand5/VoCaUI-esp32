@@ -33,56 +33,8 @@ void WiFiStationDisconnected(WiFiEvent_t event, WiFiEventInfo_t info)
 void setupWifi(void)
 {
   WAIT_FLAG_SET(FLAG_INITIALIZED_STORE);
-  renderButton("wifi", "btn_1", R"({
-    "name":"nút 1",
-    "description":"",
-    "span":{
-      
-    }
-  })",
-               [](String key, String value)
-               {
-                 log_d("%s: %s",key.c_str(),value.c_str());
-               });
-  renderButton("wifi", "btn_2", R"({
-    "name":"nút 1",
-    "description":"",
-    "span":{
-      
-    }
-  })",
-               [](String key, String value)
-               {
-                 int num = getValue(key,"0").toInt();
-                 num++;
-                 setValue(key,String(num));
-                 log_d("%s: %s",key.c_str(),value.c_str());
-               });
-  renderButton("wifi", "btn_3", R"({
-    "name":"nút 1",
-    "description":"",
-    "span":{
-      
-    }
-  })",
-               [](String key, String value)
-               {
-                 log_d("%s: %s",key.c_str(),value.c_str());
-               });
-  renderSwitch("wifi", "swt_1", R"({
-    "name":"công tắc 1",
-    "description":"",
-    "span":{
-      
-    }
-  })",
-               [](String key, String value)
-               {
-                 log_d("renderSwitch %s: %s",key.c_str(),value.c_str());
-                 setValue(key,value);
-               });
-  renderSlider("wifi2", "sld_1", R"({
-    "name":"thanh trượt",
+  renderInput("System", "_apid", R"({
+    "name":"Tên wifi",
     "description":"",
     "span":{
       
@@ -92,62 +44,8 @@ void setupWifi(void)
                {
                  setValue(key,value);
                });
-  renderSlider("wifi2", "sld_2", R"({
-    "name":"thanh trượt mới",
-    "description":"",
-    "span":{
-      
-    }
-  })",
-               [](String key, String value)
-               {
-                 setValue(key,value);
-               });
-  renderSlider("wifi2", "sld_3", R"({
-    "name":"thanh trượt mới",
-    "description":"",
-    "span":{
-      
-    }
-  })",
-               [](String key, String value)
-               {
-                 setValue(key,value);
-               });
-  renderSlider("wifi2", "sld_4", R"({
-    "name":"thanh trượt mới",
-    "description":"",
-    "newLine":true,
-    "span":{
-      
-    }
-  })",
-               [](String key, String value)
-               {
-                 setValue(key,value);
-               });
-  renderSlider("wifi2", "sld_5", R"({
-    "name":"thanh trượt mới",
-    "description":"",
-    "span":24
-  })",
-               [](String key, String value)
-               {
-                 setValue(key,value);
-               });
-  renderSlider("wifi2", "sld_6", R"({
-    "name":"thanh trượt mới",
-    "description":"",
-    "span":{
-      
-    }
-  })",
-               [](String key, String value)
-               {
-                 setValue(key,value);
-               });
-  renderInput("wifi2", "inp_6", R"({
-    "name":"Nhập dữ liệu",
+  renderInput("System", "_appw", R"({
+    "name":"Mật khẩu wifi",
     "description":"",
     "span":{
       
