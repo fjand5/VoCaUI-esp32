@@ -90,20 +90,71 @@ void setupWifi(void)
   })",
                [](String key, String value)
                {
-                 log_d("renderSlider %s: %s",key.c_str(),value.c_str());
                  setValue(key,value);
                });
   renderSlider("wifi2", "sld_2", R"({
     "name":"thanh trượt mới",
     "description":"",
-    "showInput":true,
     "span":{
       
     }
   })",
                [](String key, String value)
                {
-                 log_d("renderSlider %s: %s",key.c_str(),value.c_str());
+                 setValue(key,value);
+               });
+  renderSlider("wifi2", "sld_3", R"({
+    "name":"thanh trượt mới",
+    "description":"",
+    "span":{
+      
+    }
+  })",
+               [](String key, String value)
+               {
+                 setValue(key,value);
+               });
+  renderSlider("wifi2", "sld_4", R"({
+    "name":"thanh trượt mới",
+    "description":"",
+    "newLine":true,
+    "span":{
+      
+    }
+  })",
+               [](String key, String value)
+               {
+                 setValue(key,value);
+               });
+  renderSlider("wifi2", "sld_5", R"({
+    "name":"thanh trượt mới",
+    "description":"",
+    "span":24
+  })",
+               [](String key, String value)
+               {
+                 setValue(key,value);
+               });
+  renderSlider("wifi2", "sld_6", R"({
+    "name":"thanh trượt mới",
+    "description":"",
+    "span":{
+      
+    }
+  })",
+               [](String key, String value)
+               {
+                 setValue(key,value);
+               });
+  renderInput("wifi2", "inp_6", R"({
+    "name":"Nhập dữ liệu",
+    "description":"",
+    "span":{
+      
+    }
+  })",
+               [](String key, String value)
+               {
                  setValue(key,value);
                });
   WiFi.mode(WIFI_AP_STA);

@@ -10,10 +10,9 @@
       <el-button
         :size="compt.props.size || 'medium'"
         :type="compt.props.type || 'primary'"
-        :round="compt.props.round || true"
+        :round="compt.props.round || false"
         @click="$sendCommand()"
-        >{{ compt.props.name }} </el-button
-      >
+        >{{ compt.props.name }} </el-button>
     </ComponentWrapper>
   </div>
 </template>

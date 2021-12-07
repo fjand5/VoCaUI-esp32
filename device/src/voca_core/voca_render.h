@@ -37,6 +37,7 @@ void setupRender()
 }
 void renderComponent(String compt, String tab, String espKey, String props)
 {
+
   JsonObject comptObj = arrayRender.createNestedObject();
   comptObj["type"] = compt;
   comptObj["tab"] = tab;
@@ -46,9 +47,27 @@ void renderComponent(String compt, String tab, String espKey, String props)
   deserializeJson(_docProps, props);
   comptObj["props"] = _docProps.as<JsonObject>();
 }
+
+/*
+option.span : số cột component chiếm
+  option.span.xs (<768px)
+  option.span.sm (>=768px)
+  option.span.md (>=992px)
+  option.span.lg (>=1200)
+  option.span.xl (>=1920px)
+option.offset : số cột component dịch sang phải (những components phía sau cũng bị dịch theo)
+option.pull : di chuyển component sang phải (những components khác KHÔNG bị dịch theo)
+option.push : di chuyển component sang trái
+*/
+void renderInput(String tab, String espKey, String option, OnEvent event){
+  setOnEvents(espKey, event);
+  renderComponent("EspInput", tab, espKey, option);
+
+}
 void renderSlider(String tab, String espKey, String option, OnEvent event){
   setOnEvents(espKey, event);
   renderComponent("EspSlider", tab, espKey, option);
+
 }
 void renderSwitch(String tab, String espKey, String option, OnEvent event)
 {

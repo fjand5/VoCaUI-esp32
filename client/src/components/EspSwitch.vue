@@ -6,7 +6,7 @@
       :pull="compt.props.pull"
       :push="compt.props.push"
     >
-    <span>
+    <span class="sub-title">
     {{compt.props.name}}</span>
       <el-button-group>
         <el-button

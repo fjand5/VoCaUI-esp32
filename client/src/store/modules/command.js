@@ -16,8 +16,8 @@ const command = {
     },
     actions: {
         initCommand: function (context) {
-            // socket = new WebSocket('ws://' + "192.168.1.11" + ':81')
-            socket = new WebSocket('ws://' + window.location.hostname + ':81');
+            socket = new WebSocket('ws://' + "192.168.2.101" + ':81')
+            // socket = new WebSocket('ws://' + window.location.hostname + ':81');
 
             socket.addEventListener('message', function (event) {
             console.log("addEventListener: ", event.data);

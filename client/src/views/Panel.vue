@@ -14,6 +14,7 @@
                 :key="index"
                 :is="compt.type"
                 :compt="compt"
+                :newLine="compt.newLine"
               ></component>
             </template>
           </el-row>
@@ -27,6 +28,7 @@
 import EspButton from "../components/EspButton";
 import EspSwitch from "../components/EspSwitch";
 import EspSlider from "../components/EspSlider";
+import EspInput from "../components/EspInput";
 
 import { mapGetters } from "vuex";
 export default {
@@ -38,7 +40,8 @@ export default {
   components: {
     EspButton,
     EspSwitch,
-    EspSlider
+    EspSlider,
+    EspInput
   },
   computed: {
     ...mapGetters(["getRender"]),

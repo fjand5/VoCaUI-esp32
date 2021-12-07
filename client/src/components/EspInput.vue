@@ -1,17 +1,27 @@
 <template>
-  <div class="esp-slider">
+  <div class="esp-input">
     <ComponentWrapper
       :span="compt.props.span"
       :offset="compt.props.offset"
       :pull="compt.props.pull"
       :push="compt.props.push"
     >
-      <span class="sub-title">{{ compt.props.name }} {{ espValue }}</span>
-      <el-slider
-        @input="sendCommand"
-        v-model="clientValue"
-        :debounce="100"
-      ></el-slider>
+      <span class="sub-title">{{ compt.props.name }}</span>
+      <el-row :gutter="0">
+        <el-col :span="20">
+          <el-input :placeholder="compt.props.name" v-model="espValue" clearable>
+          </el-input>
+        </el-col>
+        <el-col :span="4">
+          <el-button
+            :type="compt.props.type || 'primary'"
+            :round="compt.props.round || false"
+            @click="$sendCommand()"
+          >
+            OK
+          </el-button>
+        </el-col>
+      </el-row>
     </ComponentWrapper>
   </div>
 </template>
@@ -21,7 +31,7 @@ import { mapGetters } from "vuex";
 
 import ComponentWrapper from "./ComponentWrapper.vue";
 export default {
-  name: "EspSlider",
+  name: "esp-input",
   props: {
     compt: Object,
   },
@@ -29,10 +39,6 @@ export default {
     return {
       sending: false,
       espValue: 0,
-      clientValue: 0,
-
-      debounceTimer: undefined,
-      noSendcommand: false,
     };
   },
   components: {
@@ -40,10 +46,7 @@ export default {
   },
   methods: {
     sendCommand: function () {
-      clearTimeout(this.debounceTimer);
-      this.debounceTimer = setTimeout(() => {
-        this.$sendCommand();
-      }, 100);
+      this.$sendCommand();
     },
   },
   computed: {
@@ -52,11 +55,8 @@ export default {
   mounted: function () {},
   watch: {
     getData: function (n) {
-      this.espValue = parseInt(n[this.compt.espKey]);
-      this.clientValue = this.espValue;
-      setTimeout(() => {
-        clearTimeout(this.debounceTimer);
-      }, 90);
+      this.espValue = n[this.compt.espKey];
+
     },
   },
 };
