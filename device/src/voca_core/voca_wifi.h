@@ -36,6 +36,7 @@ void setupWifi(void)
   renderInput("System", "_apid", R"({
     "name":"Tên wifi",
     "description":"",
+    "newLine":true,
     "span":{
       
     }
@@ -47,6 +48,8 @@ void setupWifi(void)
   renderInput("System", "_appw", R"({
     "name":"Mật khẩu wifi",
     "description":"",
+    "newLine":true,
+    "devider":true,
     "span":{
       
     }
@@ -54,6 +57,18 @@ void setupWifi(void)
                [](String key, String value)
                {
                  setValue(key,value);
+               });
+  renderButton("System", "_reset", R"({
+    "name":"Khởi động lại",
+    "description":"",
+    "confirm":"Bạn có chắc muốn khởi động lại hệ thống không?",
+    "span":{
+      
+    }
+  })",
+               [](String key, String value)
+               {
+                 ESP.restart();
                });
   WiFi.mode(WIFI_AP_STA);
   if (checkKey("_apid") && checkKey("_appw"))

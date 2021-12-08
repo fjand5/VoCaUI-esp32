@@ -5,6 +5,8 @@
       :offset="compt.props.offset"
       :pull="compt.props.pull"
       :push="compt.props.push"
+      :newLine="compt.props.newLine"
+      :divider="compt.props.divider"
     >
       <span class="sub-title">{{ compt.props.name }}</span>
       <el-row :gutter="0">

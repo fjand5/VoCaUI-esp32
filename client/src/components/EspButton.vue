@@ -5,14 +5,34 @@
       :offset="compt.props.offset"
       :pull="compt.props.pull"
       :push="compt.props.push"
+      :newLine="compt.props.newLine"
+      :divider="compt.props.divider"
+
+
     >
-    {{getData[compt.espKey]}}
+      {{ getData[compt.espKey] }}
+
       <el-button
+        v-if="!compt.props.confirm"
         :size="compt.props.size || 'medium'"
         :type="compt.props.type || 'primary'"
         :round="compt.props.round || false"
         @click="$sendCommand()"
-        >{{ compt.props.name }} </el-button>
+        >{{ compt.props.name }}
+      </el-button>
+      <el-popconfirm 
+      v-else
+      :title="compt.props.confirm"
+      @confirm="$sendCommand()"
+      >
+        <el-button
+          slot="reference"
+          :size="compt.props.size || 'medium'"
+          :type="compt.props.type || 'primary'"
+          :round="compt.props.round || false"
+          >{{ compt.props.name }} t
+        </el-button>
+      </el-popconfirm>
     </ComponentWrapper>
   </div>
 </template>
@@ -29,23 +49,21 @@ export default {
     return {
       sending: false,
       clientValue: "",
-      espValue: null
+      espValue: null,
     };
   },
-  mounted: function(){
-
-  },
+  mounted: function () {},
   components: {
     ComponentWrapper,
   },
   computed: {
     ...mapGetters(["getData"]),
   },
-  watch:{
-getData:function(n){
-  // if(n[this.compt.espKey] == )
-  console.log(n)
-}
+  watch: {
+    getData: function (n) {
+      // if(n[this.compt.espKey] == )
+      console.log(n);
+    },
   },
   methods: {
     // sendCommand: function () {

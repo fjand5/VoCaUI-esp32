@@ -13,7 +13,7 @@
       <slot />
     </el-col>
     <el-col v-if="newLine" :span="24"></el-col>
-
+    <el-divider v-if="newLine && divider"></el-divider>
   </div>
 </template>
 
@@ -24,7 +24,8 @@ export default {
     offset: Number,
     pull: Number,
     push: Number,
-    newLine: Boolean
+    newLine: Boolean,
+    divider: Boolean
   },
   data: function () {
     return {

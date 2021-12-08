@@ -14,7 +14,6 @@
                 :key="index"
                 :is="compt.type"
                 :compt="compt"
-                :newLine="compt.newLine"
               ></component>
             </template>
           </el-row>
