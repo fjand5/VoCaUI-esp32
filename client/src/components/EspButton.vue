@@ -1,14 +1,7 @@
 <template>
   <div class="esp-button">
     <ComponentWrapper
-      :span="compt.props.span"
-      :offset="compt.props.offset"
-      :pull="compt.props.pull"
-      :push="compt.props.push"
-      :newLine="compt.props.newLine"
-      :divider="compt.props.divider"
-
-
+      :params="compt.props"
     >
       {{ getData[compt.espKey] }}
 
@@ -30,7 +23,7 @@
           :size="compt.props.size || 'medium'"
           :type="compt.props.type || 'primary'"
           :round="compt.props.round || false"
-          >{{ compt.props.name }} t
+          >{{ compt.props.name }}
         </el-button>
       </el-popconfirm>
     </ComponentWrapper>
@@ -52,7 +45,9 @@ export default {
       espValue: null,
     };
   },
-  mounted: function () {},
+  mounted: function () {
+
+  },
   components: {
     ComponentWrapper,
   },
@@ -60,9 +55,9 @@ export default {
     ...mapGetters(["getData"]),
   },
   watch: {
-    getData: function (n) {
+    getData: function () {
       // if(n[this.compt.espKey] == )
-      console.log(n);
+      // console.log(n);
     },
   },
   methods: {

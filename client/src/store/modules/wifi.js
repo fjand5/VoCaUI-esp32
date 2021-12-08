@@ -23,7 +23,6 @@ const wifi = {
         updateCurrentWifi: function(context){
             return api.post('/api/getWifi')
             .then((data)=>{
-                console.log(data)
                 context.commit('setCurrentWifi', data)
                 return Promise.resolve(true)
             })

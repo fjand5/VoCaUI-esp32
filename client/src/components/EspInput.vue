@@ -1,21 +1,17 @@
 <template>
   <div class="esp-input">
     <ComponentWrapper
-      :span="compt.props.span"
-      :offset="compt.props.offset"
-      :pull="compt.props.pull"
-      :push="compt.props.push"
-      :newLine="compt.props.newLine"
-      :divider="compt.props.divider"
+      :params="compt.props"
     >
-      <span class="sub-title">{{ compt.props.name }}</span>
-      <el-row :gutter="0">
+      <span>{{ compt.props.name }}</span>
+      <el-row :gutter="5">
         <el-col :span="20">
           <el-input
             @focus="editting = true"
             @blur="blur"
             :placeholder="compt.props.name"
             v-model="clientValue"
+            :show-password="compt.props.password"
           >
           </el-input>
         </el-col>
@@ -78,9 +74,9 @@ export default {
 };
 </script>
 <style scoped>
-/* span{
-  margin-right: 20px;
-} */
+span{
+  margin-bottom: 120px;
+}
 .inActive {
   opacity: 0.3;
 }

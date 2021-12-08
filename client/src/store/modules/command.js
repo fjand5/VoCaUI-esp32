@@ -20,8 +20,6 @@ const command = {
             socket = new WebSocket('ws://' + window.location.hostname + ':81');
 
             socket.addEventListener('message', function (event) {
-            console.log("addEventListener: ", event.data);
-
                 context.commit("setData", event.data)
                 context.commit("setSending", false)
             });
@@ -38,7 +36,6 @@ const command = {
                 espValue = espValue.toString()
             else
                 espValue = ""
-            console.log("sendCommand: ",espValue);
             let obj = {
                 cmd: "exe",
                 espKey,

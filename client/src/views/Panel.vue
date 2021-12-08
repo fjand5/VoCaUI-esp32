@@ -8,7 +8,7 @@
     >
       <template v-for="(tab, index) in collectTabs">
         <el-tab-pane :key="index" :label="tab" :name="tab">
-          <el-row :gutter="20">
+          <el-row :gutter="20" justify="start">
             <template v-for="(compt, index) in getComponentsByTab(tab)">
               <component
                 :key="index"
@@ -28,7 +28,8 @@ import EspButton from "../components/EspButton";
 import EspSwitch from "../components/EspSwitch";
 import EspSlider from "../components/EspSlider";
 import EspInput from "../components/EspInput";
-
+import EspColorPicker from "../components/EspColorPicker";
+import EspSelect from "../components/EspSelect";
 import { mapGetters } from "vuex";
 export default {
   data() {
@@ -40,7 +41,9 @@ export default {
     EspButton,
     EspSwitch,
     EspSlider,
-    EspInput
+    EspInput,
+    EspColorPicker,
+    EspSelect
   },
   computed: {
     ...mapGetters(["getRender"]),

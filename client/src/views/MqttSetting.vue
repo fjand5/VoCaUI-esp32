@@ -49,7 +49,6 @@ export default {
       })
       .finally(()=>{
         this.loading = false
-        console.log(this.getMqtt)
       })
     },
     methods: {

@@ -79,6 +79,16 @@ void renderButton(String tab, String espKey, String option, OnEvent event)
   setOnEvents(espKey, event);
   renderComponent("EspButton", tab, espKey, option);
 }
+void renderColorPicker(String tab, String espKey, String option, OnEvent event)
+{
+  setOnEvents(espKey, event);
+  renderComponent("EspColorPicker", tab, espKey, option);
+}
+void renderSelect(String tab, String espKey, String option, OnEvent event)
+{
+  setOnEvents(espKey, event);
+  renderComponent("EspSelect", tab, espKey, option);
+}
 // void renderInputText(String tab, String key, String name, String option, EventFunc event = NULL){
 //   addEvent(key,event);
 //   renderComponent("input-text", tab, key, name, option);
