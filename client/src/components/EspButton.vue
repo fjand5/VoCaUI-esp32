@@ -30,7 +30,7 @@
           :size="compt.props.size || 'medium'"
           :type="compt.props.type || 'primary'"
           :round="compt.props.round || false"
-          >{{ compt.props.name }} t
+          >{{ compt.props.name }}
         </el-button>
       </el-popconfirm>
     </ComponentWrapper>

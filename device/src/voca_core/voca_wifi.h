@@ -49,7 +49,7 @@ void setupWifi(void)
     "name":"Mật khẩu wifi",
     "description":"",
     "newLine":true,
-    "devider":true,
+    "divider":true,
     "span":{
       
     }
