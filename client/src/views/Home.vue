@@ -3,12 +3,8 @@
     <el-header
     height="60px"
     >
-      <el-row
-      type="flex"
-      justify="space-between"
-      align="center"
-      >
-        <el-col>
+      <el-row type="flex" justify="start">
+        <el-col :span="12">
           <el-menu
           class="el-menu-demo"
           mode="horizontal"
@@ -37,20 +33,21 @@
                   </el-submenu>
           </el-menu>
         </el-col>
-        <el-col>
+        <el-col  :span="12" class="wifi-button">
           <el-button 
           size="small"
           v-if="getCurrentWifi"
           class="wifi-button"
           @click="$showWifiSelector"
-          > {{getCurrentWifi.ip}} </el-button>
+          > {{getCurrentWifi.ip}} 
+          <el-tag :type="getResponseTime<2000?getResponseTime<1000?'success':'warning':'danger'" size="mini">{{getResponseTime}}ms</el-tag>
+          </el-button>
           <el-button 
           v-else
           class="wifi-button"
           icon="el-icon-share" circle
           @click="$showWifiSelector"
           ></el-button>
-          
         </el-col>
       </el-row>
 
@@ -81,7 +78,7 @@ export default {
       Panel
     },
     computed:{
-      ...mapGetters(['getCurrentWifi','getSending'])
+      ...mapGetters(['getCurrentWifi','getSending', 'getResponseTime'])
     },
     mounted:function(){
       this.$store.dispatch('updateCurrentWifi')
@@ -98,9 +95,9 @@ export default {
   background: #545c64;
 }
 .wifi-button{
-  float: right;
-
-  transform: translateY(45%);
+  display: flex;
+  justify-content: end;
+  align-items: center;
 }
 .cell{
   cursor: pointer;
