@@ -6,22 +6,17 @@ const command = {
         sending: false,
 
         responseTime: -1,
-        lastPingTime: -1
+        lastPongTime: -1,
+
+        uptime: 0
     }),
     mutations: {
         setData: function (state, data) {
             let objData = JSON.parse(data)
             if (objData.cmd == "pong") {
-                let stamp = objData.stamp
-                state.responseTime = stamp - state.lastPingTime - 1000
-                state.lastPingTime = stamp
-                setTimeout(() => {
-                    let obj = {
-                        cmd: "ping"
-                    }
-                    if (socket.readyState == WebSocket.OPEN)
-                        socket.send(JSON.stringify(obj))
-                }, 1000)
+                state.uptime = objData.stamp
+
+                state.lastPongTime = Date.now()
             } else {
 
                 state.data = { ...state.data, ...objData }
@@ -31,8 +26,8 @@ const command = {
         setSending: function (state, status) {
             state.sending = status
         },
-        setConnectStatus: function (state, status) {
-            state.isConnect = status
+        updateResponseTime: function (state) {
+            state.responseTime = 1000 - (Date.now() - state.lastPongTime)
         },
     },
     actions: {
@@ -45,12 +40,12 @@ const command = {
                 context.commit("setSending", false)
             });
             socket.addEventListener('open', function () {
-                context.commit("setConnectStatus", true)
                 let obj = {
                     cmd: "gal"
                 }
                 socket.send(JSON.stringify(obj))
-                setTimeout(() => {
+                setInterval(() => {
+                    context.commit("updateResponseTime")
                     let obj = {
                         cmd: "ping"
                     }
@@ -86,6 +81,9 @@ const command = {
         },
         getResponseTime: function (state) {
             return state.responseTime
+        },
+        getUptime: function (state) {
+            return Math.floor(state.uptime / 1000)
         },
     }
 }

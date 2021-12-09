@@ -20,14 +20,14 @@
                   index="1-1">MQTT</el-menu-item> -->
                   <el-menu-item 
                   @click="$store.dispatch('reset')"
-                  index="1-1">RESET</el-menu-item>
+                  index="1-1">RESET {{getUptime}}</el-menu-item>
               
                   <el-menu-item 
                   index="1-1">
                   <el-upload
                     action="/update"
                     :auto-upload="true">
-                    <el-button slot="trigger" size="small" type="primary">select file</el-button>
+                    <el-button slot="trigger" size="small" type="primary">Upload</el-button>
                   </el-upload>
                   </el-menu-item>
                   </el-submenu>
@@ -58,7 +58,7 @@
     >   
       <Panel/>           
     </el-main>
-    <el-footer>Footer {{getSending}}</el-footer>
+    <el-footer>Email: huynhtheluat@gmail.com</el-footer>
   </el-container>
 </template>
 
@@ -78,7 +78,7 @@ export default {
       Panel
     },
     computed:{
-      ...mapGetters(['getCurrentWifi','getSending', 'getResponseTime'])
+      ...mapGetters(['getCurrentWifi','getSending', 'getResponseTime','getUptime'])
     },
     mounted:function(){
       this.$store.dispatch('updateCurrentWifi')
