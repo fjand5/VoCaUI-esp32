@@ -1,4 +1,6 @@
 #pragma once
+#define DEFAULT_USERNAME "admin"
+#define DEFAULT_PASSWORD "12345678"
 #define CONFIG_FILE "/config.txt"
 #include "FS.h"
 #include <LITTLEFS.h>
@@ -45,6 +47,75 @@ bool checkKey(String key)
   return false;
 }
 
+String getUsername()
+{
+  String username;
+  if (!checkKey("*username"))
+    return DEFAULT_USERNAME;
+  if (xSemaphoreTake(configContent_sem, portMAX_DELAY) == pdTRUE)
+  {
+    String username = ConfigContent["*username"];
+    xSemaphoreGive(configContent_sem);
+  }
+  return username;
+}
+void setUsername(String username)
+{
+  if (xSemaphoreTake(configContent_sem, portMAX_DELAY) == pdTRUE)
+  {
+    ConfigContent["*username"] = username;
+    xSemaphoreGive(configContent_sem);
+  }
+  saveConfigFile();
+}
+void setPassword(String password)
+{
+  if (xSemaphoreTake(configContent_sem, portMAX_DELAY) == pdTRUE)
+  {
+    ConfigContent["*password"] = password;
+    xSemaphoreGive(configContent_sem);
+  }
+  saveConfigFile();
+}
+void setJwtPayload(String payload)
+{
+  if (xSemaphoreTake(configContent_sem, portMAX_DELAY) == pdTRUE)
+  {
+    ConfigContent["*jwtPayload"] = payload;
+    xSemaphoreGive(configContent_sem);
+  }
+}
+String getJwtPayload()
+{
+  String payload;
+  if (!checkKey("*jwtPayload"))
+    return "null";
+  if (xSemaphoreTake(configContent_sem, portMAX_DELAY) == pdTRUE)
+  {
+    payload = ConfigContent["*jwtPayload"];
+    xSemaphoreGive(configContent_sem);
+  }
+  return payload;
+}
+String getPassword()
+{
+  String password;
+  if (!checkKey("*password"))
+    return DEFAULT_PASSWORD;
+  if (xSemaphoreTake(configContent_sem, portMAX_DELAY) == pdTRUE)
+  {
+    String password = ConfigContent["*password"];
+    xSemaphoreGive(configContent_sem);
+  }
+  return password;
+}
+bool Authentication(String username, String password)
+{
+  if (getUsername() == username && getPassword() == password)
+    return true;
+  return false;
+}
+
 // Lấy giá trị của Key
 String getValue(String key, String def = "", bool setDefaultTokey = true)
 {
@@ -70,7 +141,6 @@ void getValueByObject(String key, JsonObject objectValue, String def = "", bool 
 {
   String value = getValue(key, def, setDefaultTokey);
   objectValue[key] = value;
-
 }
 char *getValueByCStr(String key, String def = "", bool setDefaultTokey = true)
 {
@@ -136,7 +206,7 @@ void setValue(String key, String value, bool save)
   bool noChange = ConfigContent[key] == value;
   if (!noChange)
   {
-    if (key.indexOf("=") >= 0 || key.indexOf("\n") >= 0 || value.indexOf("\n") >= 0)
+    if (key.startsWith("*") >= 0 || key.indexOf("=") >= 0 || key.indexOf("\n") >= 0 || value.indexOf("\n") >= 0)
       return;
     if (xSemaphoreTake(configContent_sem, portMAX_DELAY) == pdTRUE)
     {
