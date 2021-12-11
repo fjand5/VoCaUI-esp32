@@ -33,7 +33,7 @@
         <el-col :span="12" class="wifi-button">
           <el-button
             size="small"
-            v-if="getAuthState && getCurrentWifi"
+            v-if="getAuthStatus && getCurrentWifi"
             class="wifi-button"
             @click="$showWifiSelector"
           >
@@ -61,7 +61,7 @@
       </el-row>
     </el-header>
     <el-main v-loading="getSending">
-      <Panel v-if="getAuthState" />
+      <Panel v-if="getAuthStatus" />
     </el-main>
     <el-footer>Email: huynhtheluat@gmail.com</el-footer>
   </el-container>
@@ -82,7 +82,7 @@ export default {
   },
   computed: {
     ...mapGetters([
-      "getAuthState",
+      "getAuthStatus",
       "getCurrentWifi",
       "getSending",
       "getResponseTime",
@@ -90,9 +90,11 @@ export default {
     ]),
   },
   mounted: function () {
-    this.$store.dispatch("login",{username:"admin",password:"12345678"});
+    this.$store.dispatch("login",{username:"admin",password:"12345678"})
+    .then(()=>{
+      this.$store.dispatch("updateCurrentWifi");
+    })
 
-    // this.$store.dispatch("updateCurrentWifi");
   },
   methods: {},
 };

@@ -18,7 +18,6 @@ const command = {
 
                 state.lastPongTime = Date.now()
             } else {
-
                 state.data = { ...state.data, ...objData }
             }
 
@@ -32,7 +31,7 @@ const command = {
     },
     actions: {
         initCommand: function (context) {
-            socket = new WebSocket('ws://' + "192.168.1.13" + ':81')
+            socket = new WebSocket('ws://' + "192.168.2.101" + ':81/'+localStorage.getItem('jwt_aut', ""))
             // socket = new WebSocket('ws://' + window.location.hostname + ':81');
 
             socket.addEventListener('message', function (event) {

@@ -24,15 +24,22 @@ void addHttpApi(String url, Response response)
             {
               String token = server.header("Authorization");
               token.replace("Bearer ", "");
+              comHeader();
+              if (server.method() == HTTP_OPTIONS)
+              {
+                server.send(200);
+                return;
+              }
               if (xSemaphoreTake(http_api_sem, portMAX_DELAY) == pdTRUE)
               {
                 if (check_auth_jwt(token))
                 {
-                  comHeader();
                   String bearerHeader = String("Bearer ") + create_auth_jwt();
                   server.sendHeader("Authorization", bearerHeader);
                   response();
-                }else{
+                }
+                else
+                {
                   server.send(401);
                 }
                 xSemaphoreGive(http_api_sem);
@@ -57,8 +64,16 @@ void setupWebserver()
                   []()
                   {
                     comHeader();
+                    if (server.method() == HTTP_OPTIONS)
+                    {
+                      server.send(200);
+                      return;
+                    }
                     if (server.authenticate(getUsername().c_str(), getPassword().c_str()))
                     {
+                      String bearerHeader = String("Bearer ") + create_auth_jwt();
+                      server.sendHeader("Authorization", bearerHeader);
+
                       server.send(200);
                     }
                     else

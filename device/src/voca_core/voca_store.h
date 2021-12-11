@@ -196,8 +196,9 @@ void setValue(String key, String value, bool save)
   bool noChange = ConfigContent[key] == value;
   if (!noChange)
   {
-    if (key.startsWith("*") >= 0 || key.indexOf("=") >= 0 || key.indexOf("\n") >= 0 || value.indexOf("\n") >= 0)
+    if (key.startsWith("*") || key.indexOf("=") >= 0 || key.indexOf("\n") >= 0 || value.indexOf("\n") >= 0)
       return;
+    
     if (xSemaphoreTake(configContent_sem, portMAX_DELAY) == pdTRUE)
     {
       ConfigContent[key] = value;
@@ -215,7 +216,6 @@ void setValue(String key, String value, bool save)
     }
   }
 
-  log_d("key: %s; value: %s; save: %d; noChange: %d", key.c_str(), value.c_str(), save, noChange);
   // nếu không yêu cầu lưu vào flash hoặc giá trị như cũ
   if (!save || noChange)
   {

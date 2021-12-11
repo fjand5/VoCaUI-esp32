@@ -8,31 +8,43 @@ WebSocketsServer webSocket = WebSocketsServer(81);
 SemaphoreHandle_t websocket_sem;
 typedef void (*OnWSTextIncome)(JsonObject);
 std::list<OnWSTextIncome> OnWSTextIncomes;
-
 void setOnWSTextIncome(OnWSTextIncome cb)
 {
     OnWSTextIncomes.push_front(cb);
 }
-void onConnect(uint8_t num)
+void onConnect(uint8_t num, uint8_t *payload, size_t length)
 {
-    // String ret = "";
-    // DynamicJsonDocument doc = getValuesByJson();
-    // serializeJson(doc, ret);
-    // webSocket.sendTXT(num, ret);
+    String token = "";
+    for (int i = 0; i < length; i++)
+    {
+        token += (char)payload[i];
+    }
+    token.replace("/", "");
+
+    if (!check_auth_jwt(token))
+    {
+        log_d("token: %s num: %d", token.c_str(), num);
+        xSemaphoreGive(websocket_sem);
+        webSocket.disconnect(num);
+    }
+    else
+    {
+        log_d("token: %s num: %d", token.c_str(), num);
+    }
 }
 void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t length)
 {
     if (xSemaphoreTake(websocket_sem, portMAX_DELAY) == pdTRUE)
     {
-        String data;
         switch (type)
         {
         case WStype_DISCONNECTED:
+        {
             break;
+        }
         case WStype_CONNECTED:
         {
-
-            onConnect(num);
+            onConnect(num, payload, length);
             break;
         }
         case WStype_TEXT:
@@ -52,6 +64,10 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t length)
                 String _key = obj["espKey"];
                 obj = _doc.to<JsonObject>();
                 getValueByObject(_key, obj);
+
+                String tmp;
+                serializeJsonPretty(_doc, tmp);
+                log_d("serializeJsonPretty: %s", tmp.c_str());
             }
             else if (obj["cmd"] == "gal")
             {
@@ -66,7 +82,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t length)
             }
             // dùng luôn _doc để lấy giá trị
             serializeJson(_doc, ret);
-            webSocket.broadcastTXT(ret.c_str());
+            webSocket.broadcastTXT(ret);
             break;
         }
         case WStype_BIN:

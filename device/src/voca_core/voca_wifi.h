@@ -117,7 +117,7 @@ void setupWifi(void)
   if (checkKey("_ssid") && checkKey("_sspw"))
   {
     // WiFi.begin(getValueByCStr("_ssid"), getValueByCStr("_sspw"));
-    WiFi.begin("Vong Cat 3", "78787878");
+    WiFi.begin("Vong Cat-Hide", "78787878");
 
     while (WiFi.status() != WL_CONNECTED && millis() < 30000)
     {
