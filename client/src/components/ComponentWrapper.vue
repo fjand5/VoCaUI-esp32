@@ -13,12 +13,8 @@
     >
       <slot />
     </el-col>
-<<<<<<< HEAD
-    <el-col v-if="newLine" :span="24"></el-col>
-=======
     <el-col v-if="params.newLine" :span="24"></el-col>
     <el-divider v-if="params.newLine && params.divider"></el-divider>
->>>>>>> c381c7f9a8b9cfadbc239c8b62b9147a6c3c457b
   </div>
 </template>
 

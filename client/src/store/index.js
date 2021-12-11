@@ -5,6 +5,7 @@ import mqtt from './modules/mqtt'
 import system from './modules/system'
 import command from './modules/command'
 import render from './modules/render'
+import auth from './modules/auth'
 
 
 Vue.use(Vuex)
@@ -15,7 +16,8 @@ const store = new Vuex.Store({
         mqtt,
         system,
         command,
-        render
+        render,
+        auth
     ]
 })
 export default store

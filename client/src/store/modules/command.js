@@ -32,11 +32,7 @@ const command = {
     },
     actions: {
         initCommand: function (context) {
-<<<<<<< HEAD
-            socket = new WebSocket('ws://' + "192.168.1.12" + ':81')
-=======
-            socket = new WebSocket('ws://' + "192.168.2.101" + ':81')
->>>>>>> c381c7f9a8b9cfadbc239c8b62b9147a6c3c457b
+            socket = new WebSocket('ws://' + "192.168.1.13" + ':81')
             // socket = new WebSocket('ws://' + window.location.hostname + ':81');
 
             socket.addEventListener('message', function (event) {

@@ -59,8 +59,7 @@ void setupWebserver()
                     comHeader();
                     if (server.authenticate(getUsername().c_str(), getPassword().c_str()))
                     {
-                      String tmp = create_auth_jwt();
-                      server.send_P(200, "application/json", tmp.c_str());
+                      server.send(200);
                     }
                     else
                     {
