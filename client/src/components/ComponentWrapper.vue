@@ -1,4 +1,5 @@
 <template>
+
   <div class="component-wrapper">
     <el-col
       :xs="xs"
@@ -6,25 +7,25 @@
       :md="md"
       :lg="lg"
       :xl="xl"
-      :offset="offset || 0"
-      :pull="pull || 0"
-      :push="push || 0"
+      :offset="params.offset || 0"
+      :pull="params.pull || 0"
+      :push="params.push || 0"
     >
       <slot />
     </el-col>
+<<<<<<< HEAD
     <el-col v-if="newLine" :span="24"></el-col>
+=======
+    <el-col v-if="params.newLine" :span="24"></el-col>
+    <el-divider v-if="params.newLine && params.divider"></el-divider>
+>>>>>>> c381c7f9a8b9cfadbc239c8b62b9147a6c3c457b
   </div>
 </template>
 
 <script>
 export default {
   props: {
-    span: [Object, Number],
-    offset: Number,
-    pull: Number,
-    push: Number,
-    newLine: Boolean,
-    divider: Boolean
+    params: Object
   },
   data: function () {
     return {
@@ -36,18 +37,18 @@ export default {
     };
   },
   mounted: function () {
-    if (typeof this.span == "number") {
-      this.xs = this.span;
-      this.sm = this.span;
-      this.md = this.span;
-      this.lg = this.span;
-      this.xl = this.span;
+    if (typeof this.params.span == "number") {
+      this.xs = this.params.span;
+      this.sm = this.params.span;
+      this.md = this.params.span;
+      this.lg = this.params.span;
+      this.xl = this.params.span;
     } else {
-      this.xs = this.span.xs || this.xs;
-      this.sm = this.span.sm || this.sm;
-      this.md = this.span.md || this.md;
-      this.lg = this.span.lg || this.lg;
-      this.xl = this.span.xl || this.xl;
+      this.xs = this.params.span.xs || this.xs;
+      this.sm = this.params.span.sm || this.sm;
+      this.md = this.params.span.md || this.md;
+      this.lg = this.params.span.lg || this.lg;
+      this.xl = this.params.span.xl || this.xl;
     }
   },
 };
@@ -56,5 +57,6 @@ export default {
 <style scoped>
 .el-col {
   margin-bottom: 20px;
+  text-align: start;
 }
 </style>

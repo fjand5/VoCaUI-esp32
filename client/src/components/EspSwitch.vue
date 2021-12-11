@@ -1,10 +1,7 @@
 <template>
   <div class="esp-switch">
     <ComponentWrapper
-      :span="compt.props.span"
-      :offset="compt.props.offset"
-      :pull="compt.props.pull"
-      :push="compt.props.push"
+      :params="compt.props"
     >
     <span class="sub-title">
     {{compt.props.name}}</span>
@@ -60,9 +57,6 @@ export default {
         this.clientValue = true
       this.$sendCommand();
     },
-    groupClick: function () {
-      console.log("groupClick");
-    },
   },
   computed: {
     ...mapGetters(["getData"]),
@@ -70,7 +64,6 @@ export default {
   watch: {
     getData: function (n) {
       this.espValue = n[this.compt.espKey] == "true"
-      console.log("getData", n);
     },
   },
 };

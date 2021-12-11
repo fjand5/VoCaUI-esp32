@@ -1,4 +1,6 @@
 #pragma once
+#define DEFAULT_USERNAME "admin"
+#define DEFAULT_PASSWORD "12345678"
 #define CONFIG_FILE "/config.txt"
 #include "FS.h"
 #include <LITTLEFS.h>
@@ -45,9 +47,60 @@ bool checkKey(String key)
   return false;
 }
 
+String getUsername()
+{
+  String username;
+  if (!checkKey("*username"))
+    return DEFAULT_USERNAME;
+  if (xSemaphoreTake(configContent_sem, portMAX_DELAY) == pdTRUE)
+  {
+    String username = ConfigContent["*username"];
+    xSemaphoreGive(configContent_sem);
+  }
+  return username;
+}
+void setUsername(String username)
+{
+  if (xSemaphoreTake(configContent_sem, portMAX_DELAY) == pdTRUE)
+  {
+    ConfigContent["*username"] = username;
+    xSemaphoreGive(configContent_sem);
+  }
+  saveConfigFile();
+}
+void setPassword(String password)
+{
+  if (xSemaphoreTake(configContent_sem, portMAX_DELAY) == pdTRUE)
+  {
+    ConfigContent["*password"] = password;
+    xSemaphoreGive(configContent_sem);
+  }
+  saveConfigFile();
+}
+String getPassword()
+{
+  String password;
+  if (!checkKey("*password"))
+    return DEFAULT_PASSWORD;
+  if (xSemaphoreTake(configContent_sem, portMAX_DELAY) == pdTRUE)
+  {
+    String password = ConfigContent["*password"];
+    xSemaphoreGive(configContent_sem);
+  }
+  return password;
+}
+bool Authentication(String username, String password)
+{
+  if (getUsername() == username && getPassword() == password)
+    return true;
+  return false;
+}
+
 // Lấy giá trị của Key
 String getValue(String key, String def = "", bool setDefaultTokey = true)
 {
+  if (key.startsWith("*"))
+    return "";
   if (checkKey(key))
   {
     if (xSemaphoreTake(configContent_sem, portMAX_DELAY) == pdTRUE)
@@ -68,14 +121,17 @@ String getValue(String key, String def = "", bool setDefaultTokey = true)
 }
 void getValueByObject(String key, JsonObject objectValue, String def = "", bool setDefaultTokey = true)
 {
+  if (key.startsWith("*"))
+    return;
   String value = getValue(key, def, setDefaultTokey);
   objectValue[key] = value;
-
 }
 char *getValueByCStr(String key, String def = "", bool setDefaultTokey = true)
 {
   char *ret;
 
+  if (key.startsWith("*"))
+    return "";
   if (checkKey(key))
   {
     String tmp;
@@ -109,6 +165,8 @@ String getValuesByString()
     for (std::pair<String, String> e : ConfigContent)
     {
       String k = e.first;
+      if (k.startsWith("*"))
+        continue;
       String v = e.second;
       ret += k + "=" + v + "\n";
     }
@@ -123,6 +181,8 @@ void getValuesByObject(JsonObject objectValues)
     for (std::pair<String, String> e : ConfigContent)
     {
       String k = e.first;
+      if (k.startsWith("*"))
+        continue;
       String v = e.second;
       objectValues[k] = v;
     }
@@ -136,7 +196,7 @@ void setValue(String key, String value, bool save)
   bool noChange = ConfigContent[key] == value;
   if (!noChange)
   {
-    if (key.indexOf("=") >= 0 || key.indexOf("\n") >= 0 || value.indexOf("\n") >= 0)
+    if (key.startsWith("*") >= 0 || key.indexOf("=") >= 0 || key.indexOf("\n") >= 0 || value.indexOf("\n") >= 0)
       return;
     if (xSemaphoreTake(configContent_sem, portMAX_DELAY) == pdTRUE)
     {

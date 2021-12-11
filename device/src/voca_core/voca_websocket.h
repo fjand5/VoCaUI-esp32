@@ -58,6 +58,12 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t length)
                 obj = _doc.to<JsonObject>();
                 getValuesByObject(obj);
             }
+            else if (obj["cmd"] == "ping")
+            {
+                obj = _doc.to<JsonObject>();
+                obj["cmd"] = "pong";
+                obj["stamp"] = millis();
+            }
             // dùng luôn _doc để lấy giá trị
             serializeJson(_doc, ret);
             webSocket.broadcastTXT(ret.c_str());

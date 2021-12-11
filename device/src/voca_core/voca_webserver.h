@@ -1,13 +1,13 @@
 #pragma once
+
 #include "voca_dist.h"
 #include <WebServer.h>
-
 #include <ArduinoJson.h>
 #include "voca_store.h"
+#include "voca_auth.h"
 
 WebServer server(80);
 SemaphoreHandle_t http_api_sem;
-
 typedef void (*Response)(void);
 void comHeader()
 {
@@ -22,10 +22,19 @@ void addHttpApi(String url, Response response)
     url = url.substring(1);
   server.on(String("/api/") + url, [response]()
             {
+              String token = server.header("Authorization");
+              token.replace("Bearer ", "");
               if (xSemaphoreTake(http_api_sem, portMAX_DELAY) == pdTRUE)
               {
-                comHeader();
-                response();
+                if (check_auth_jwt(token))
+                {
+                  comHeader();
+                  String bearerHeader = String("Bearer ") + create_auth_jwt();
+                  server.sendHeader("Authorization", bearerHeader);
+                  response();
+                }else{
+                  server.send(401);
+                }
                 xSemaphoreGive(http_api_sem);
               }
             });
@@ -44,6 +53,20 @@ void setupWebserver()
       [](void *param)
       {
         server.on("/", handleIndex);
+        server.on("/login",
+                  []()
+                  {
+                    comHeader();
+                    if (server.authenticate(getUsername().c_str(), getPassword().c_str()))
+                    {
+                      String tmp = create_auth_jwt();
+                      server.send_P(200, "application/json", tmp.c_str());
+                    }
+                    else
+                    {
+                      server.send(401);
+                    }
+                  });
         server.on("/js/app.js",
                   []()
                   {
@@ -72,7 +95,6 @@ void setupWebserver()
         xSemaphoreGive(http_api_sem);
         SET_FLAG(FLAG_WEBSERVER_READY);
         WAIT_FLAG_SET(FLAG_WEBSERVER_READY | FLAG_WEBSOCKET_READY);
-
 
         while (1)
         {

@@ -3,12 +3,8 @@
     <el-header
     height="60px"
     >
-      <el-row
-      type="flex"
-      justify="space-between"
-      align="center"
-      >
-        <el-col>
+      <el-row type="flex" justify="start">
+        <el-col :span="12">
           <el-menu
           class="el-menu-demo"
           mode="horizontal"
@@ -24,33 +20,34 @@
                   index="1-1">MQTT</el-menu-item> -->
                   <el-menu-item 
                   @click="$store.dispatch('reset')"
-                  index="1-1">RESET</el-menu-item>
+                  index="1-1">RESET {{getUptime}}</el-menu-item>
               
                   <el-menu-item 
                   index="1-1">
                   <el-upload
                     action="/update"
                     :auto-upload="true">
-                    <el-button slot="trigger" size="small" type="primary">select file</el-button>
+                    <el-button slot="trigger" size="small" type="primary">Upload</el-button>
                   </el-upload>
                   </el-menu-item>
                   </el-submenu>
           </el-menu>
         </el-col>
-        <el-col>
+        <el-col  :span="12" class="wifi-button">
           <el-button 
           size="small"
           v-if="getCurrentWifi"
           class="wifi-button"
           @click="$showWifiSelector"
-          > {{getCurrentWifi.ip}} </el-button>
+          > {{getCurrentWifi.ip}} 
+          <el-tag :type="getResponseTime<2000?getResponseTime<1000?'success':'warning':'danger'" size="mini">{{getResponseTime}}ms</el-tag>
+          </el-button>
           <el-button 
           v-else
           class="wifi-button"
           icon="el-icon-share" circle
           @click="$showWifiSelector"
           ></el-button>
-          
         </el-col>
       </el-row>
 
@@ -61,7 +58,7 @@
     >   
       <Panel/>           
     </el-main>
-    <el-footer>Footer {{getSending}}</el-footer>
+    <el-footer>Email: huynhtheluat@gmail.com</el-footer>
   </el-container>
 </template>
 
@@ -81,7 +78,7 @@ export default {
       Panel
     },
     computed:{
-      ...mapGetters(['getCurrentWifi','getSending'])
+      ...mapGetters(['getCurrentWifi','getSending', 'getResponseTime','getUptime'])
     },
     mounted:function(){
       this.$store.dispatch('updateCurrentWifi')
@@ -98,9 +95,9 @@ export default {
   background: #545c64;
 }
 .wifi-button{
-  float: right;
-
-  transform: translateY(45%);
+  display: flex;
+  justify-content: end;
+  align-items: center;
 }
 .cell{
   cursor: pointer;

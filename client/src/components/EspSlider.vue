@@ -1,10 +1,7 @@
 <template>
   <div class="esp-slider">
     <ComponentWrapper
-      :span="compt.props.span"
-      :offset="compt.props.offset"
-      :pull="compt.props.pull"
-      :push="compt.props.push"
+      :params="compt.props"
     >
       <span class="sub-title">{{ compt.props.name }} {{ espValue }}</span>
       <el-slider
@@ -32,7 +29,6 @@ export default {
       clientValue: 0,
 
       debounceTimer: undefined,
-      noSendcommand: false,
     };
   },
   components: {

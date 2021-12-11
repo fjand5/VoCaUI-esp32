@@ -16,8 +16,8 @@ void WiFiStationDisconnected(WiFiEvent_t event, WiFiEventInfo_t info)
   SET_FLAG(FLAG_CONNECTED_STA);
   if (checkKey("_ssid") && checkKey("_sspw"))
   {
-    WiFi.begin(getValueByCStr("_ssid"), getValueByCStr("_sspw"));
-    // WiFi.begin("Vong Cat-Hide", "78787878");
+    // WiFi.begin(getValueByCStr("_ssid"), getValueByCStr("_sspw"));
+    WiFi.begin("Vong Cat 3", "78787878");
 
     while (WiFi.status() != WL_CONNECTED && millis() < 30000)
     {
@@ -49,10 +49,8 @@ void setupWifi(void)
     "name":"Mật khẩu wifi",
     "description":"",
     "newLine":true,
-    "divider":true,
-    "span":{
+    "password":true,
       
-    }
   })",
                [](String key, String value)
                {
@@ -62,13 +60,46 @@ void setupWifi(void)
     "name":"Khởi động lại",
     "description":"",
     "confirm":"Bạn có chắc muốn khởi động lại hệ thống không?",
+    "span":{}
+  })",
+               [](String key, String value)
+               {
+                 ESP.restart();
+               });
+    renderButton("System", "_format", R"({
+    "name":"Xóa dữ liệu",
+    "description":"",
+    "confirm":"Bạn có chắc muốn xóa toàn bộ dữ liệu không?",
     "span":{
       
     }
   })",
                [](String key, String value)
                {
-                 ESP.restart();
+                 LITTLEFS.format();
+               });
+    renderColorPicker("Color", "_color", R"({
+    "name":"Xóa dữ liệu",
+    "description":"",
+    "span":6
+  })",
+               [](String key, String value)
+               {
+                 setValue(key,value);
+
+                 log_d("key: %s; value: %s",key.c_str(), value.c_str());
+               });
+    renderSelect("Color", "_select", R"({
+    "name":"Lựa chọn",
+    "description":"",
+    "options":["một","hai","ba","bốn"],
+    "span":6
+  })",
+               [](String key, String value)
+               {
+                 setValue(key,value);
+
+                 log_d("key: %s; value: %s",key.c_str(), value.c_str());
                });
   WiFi.mode(WIFI_AP_STA);
   if (checkKey("_apid") && checkKey("_appw"))
@@ -85,7 +116,9 @@ void setupWifi(void)
 
   if (checkKey("_ssid") && checkKey("_sspw"))
   {
-    WiFi.begin(getValueByCStr("_ssid"), getValueByCStr("_sspw"));
+    // WiFi.begin(getValueByCStr("_ssid"), getValueByCStr("_sspw"));
+    WiFi.begin("Vong Cat 3", "78787878");
+
     while (WiFi.status() != WL_CONNECTED && millis() < 30000)
     {
       delay(500);

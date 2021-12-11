@@ -4,24 +4,42 @@ const command = {
     state: () => ({
         data: {},
         sending: false,
+
+        responseTime: -1,
+        lastPongTime: -1,
+
+        uptime: 0
     }),
     mutations: {
         setData: function (state, data) {
             let objData = JSON.parse(data)
-            state.data = { ...state.data, ...objData }
+            if (objData.cmd == "pong") {
+                state.uptime = objData.stamp
+
+                state.lastPongTime = Date.now()
+            } else {
+
+                state.data = { ...state.data, ...objData }
+            }
+
         },
         setSending: function (state, status) {
             state.sending = status
         },
+        updateResponseTime: function (state) {
+            state.responseTime = 1000 - (Date.now() - state.lastPongTime)
+        },
     },
     actions: {
         initCommand: function (context) {
+<<<<<<< HEAD
             socket = new WebSocket('ws://' + "192.168.1.12" + ':81')
+=======
+            socket = new WebSocket('ws://' + "192.168.2.101" + ':81')
+>>>>>>> c381c7f9a8b9cfadbc239c8b62b9147a6c3c457b
             // socket = new WebSocket('ws://' + window.location.hostname + ':81');
 
             socket.addEventListener('message', function (event) {
-            console.log("addEventListener: ", event.data);
-
                 context.commit("setData", event.data)
                 context.commit("setSending", false)
             });
@@ -30,15 +48,22 @@ const command = {
                     cmd: "gal"
                 }
                 socket.send(JSON.stringify(obj))
+                setInterval(() => {
+                    context.commit("updateResponseTime")
+                    let obj = {
+                        cmd: "ping"
+                    }
+                    if (socket.readyState == WebSocket.OPEN)
+                        socket.send(JSON.stringify(obj))
+                }, 1000)
             });
         },
         sendCommand: function (context, { espKey, espValue }) {
-            
-            if(espValue != undefined)
+
+            if (espValue != undefined)
                 espValue = espValue.toString()
             else
                 espValue = ""
-            console.log("sendCommand: ",espValue);
             let obj = {
                 cmd: "exe",
                 espKey,
@@ -57,6 +82,12 @@ const command = {
         },
         getSending: function (state) {
             return state.sending
+        },
+        getResponseTime: function (state) {
+            return state.responseTime
+        },
+        getUptime: function (state) {
+            return Math.floor(state.uptime / 1000)
         },
     }
 }
