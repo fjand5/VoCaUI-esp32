@@ -19,6 +19,9 @@
               <el-menu-item @click="$store.dispatch('reset')" index="1-1"
                 >RESET {{ getUptime }}</el-menu-item
               >
+              <el-menu-item @click="$store.dispatch('logout')" index="1-1"
+                >Đăng xuất</el-menu-item
+              >
 
               <el-menu-item index="1-1">
                 <el-upload action="/update" :auto-upload="true">
@@ -90,11 +93,7 @@ export default {
     ]),
   },
   mounted: function () {
-    this.$store.dispatch("login",{username:"admin",password:"12345678"})
-    .then(()=>{
-      this.$store.dispatch("updateCurrentWifi");
-    })
-
+    this.$showLogin();
   },
   methods: {},
 };

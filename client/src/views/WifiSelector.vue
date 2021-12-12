@@ -105,6 +105,7 @@ export default {
         this.$notify({
           title: 'Thiết lập wifi thành công.',
           message: 'Khởi động lại thiết bị để hoàn tất.',
+          type: 'warning',
           duration: 10000
         });
       }

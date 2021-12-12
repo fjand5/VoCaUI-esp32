@@ -4,24 +4,37 @@ const wifi = {
         isAuth: false,
     }),
     mutations: {
-        setToken: function(state, token){
+        setToken: function (state, token) {
             localStorage.setItem('jwt_aut', token);
         },
-        setAuthStatus: function(state, status){
+        setAuthStatus: function (state, status) {
             state.isAuth = status
-
         },
     },
     actions: {
+        logout: function (context) {
+            context.commit("setAuthStatus", false)
+            localStorage.removeItem('jwt_aut')
+        },
+        checkToken: function (context) {
+            return api.post('/checkToken')
+                .then((data) => {
+                    let token = data.headers["authorization"]
+                    token = token.replace("Bearer ", "");
+                    context.commit("setToken", token)
+                    context.commit("setAuthStatus", true)
+                    console.log(token)
+                    return Promise.resolve(true)
+                })
+        },
         login: function (context, { username, password }) {
             let basicAuth = 'Basic ' + btoa(username + ':' + password);
-
             return api.post('/login', {}, {
                 headers: { 'Authorization': basicAuth }
             })
                 .then((data) => {
                     let token = data.headers["authorization"]
-                    token = token.replace("Bearer ","");
+                    token = token.replace("Bearer ", "");
                     context.commit("setToken", token)
                     context.commit("setAuthStatus", true)
                     console.log(token)
@@ -30,7 +43,7 @@ const wifi = {
         },
     },
     getters: {
-        getAuthStatus: function(state){
+        getAuthStatus: function (state) {
             return state.isAuth
         }
     }

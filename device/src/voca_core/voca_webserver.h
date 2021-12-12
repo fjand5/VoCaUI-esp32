@@ -60,6 +60,28 @@ void setupWebserver()
       [](void *param)
       {
         server.on("/", handleIndex);
+        server.on("/checkToken",
+                  []()
+                  {
+                    String token = server.header("Authorization");
+                    token.replace("Bearer ", "");
+                    comHeader();
+                    if (server.method() == HTTP_OPTIONS)
+                    {
+                      server.send(200);
+                      return;
+                    }
+                    if (check_auth_jwt(token))
+                    {
+                      String bearerHeader = String("Bearer ") + create_auth_jwt();
+                      server.sendHeader("Authorization", bearerHeader);
+                      server.send(200);
+                    }
+                    else
+                    {
+                      server.send(401);
+                    }
+                  });
         server.on("/login",
                   []()
                   {
