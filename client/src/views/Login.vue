@@ -4,9 +4,15 @@
       title="Đăng nhập"
       :visible.sync="loginDialog"
       :append-to-body="true"
+      :close-on-click-modal="false"
+      :closed="onClose"
       width="70%"
     >
-      <el-form label-width="85px" v-loading="loading">
+      <el-form
+        label-width="85px"
+        v-loading="loading"
+        element-loading-text="Đang đăng nhập..."
+      >
         <el-form-item label="Username">
           <el-input v-model="username"></el-input>
         </el-form-item>
@@ -22,38 +28,49 @@
 
 
 <script>
-import { mapGetters } from "vuex";
+// import { mapGetters } from "vuex";
 
 export default {
   data() {
     return {
-      loginDialog: false,
-
+      loginDialog: true,
+      loading: true,
       username: "admin",
       password: "12345678",
     };
   },
   computed: {
-    ...mapGetters(["getAuthStatus"]),
+    // ...mapGetters(["getAuthStatus"]),
   },
   watch: {
-    getAuthStatus: function (n) {
-      this.loginDialog = !n;
-    },
+    // getAuthStatus: function (n) {
+    //   this.loginDialog = !n;
+    // },
   },
   mounted: function () {
-    this.$store.dispatch("checkToken")
-    .then(()=>{this.$store.dispatch("updateCurrentWifi")})
-    .catch(()=>{
-      this.loginDialog = true
-    })
+    this.loading = true;
+    this.$store
+      .dispatch("checkToken")
+      .then(() => {
+        this.$store.dispatch("updateCurrentWifi");
+        this.$destroy();
+      })
+      .catch(() => {})
+      .finally(() => {
+        this.loading = false;
+      });
   },
   methods: {
+    onClose: function () {
+      this.loginDialog = true;
+    },
     login: function () {
+      this.loading = true;
       this.$store
         .dispatch("login", { username: this.username, password: this.password })
         .then(() => {
           this.$store.dispatch("updateCurrentWifi");
+          this.$destroy();
         })
         .catch(() => {
           this.$notify({
@@ -62,6 +79,9 @@ export default {
             type: "Error",
             duration: 10000,
           });
+        })
+        .finally(() => {
+          this.loading = false;
         });
     },
   },

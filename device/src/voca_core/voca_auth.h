@@ -4,7 +4,7 @@
 #include <ArduinoJWT.h>
 #include "voca_store.h"
 
-#define EXPIRE_TIME 30 * 1000 // seconds
+#define EXPIRE_TIME 48 * 24 * 60 * 1000 // miliseconds (2 ngày)
 ArduinoJWT auth_jwt(__TIME__);
 uint32_t simpleHash(String str)
 {
@@ -37,7 +37,8 @@ bool check_auth_jwt(String token)
         JsonObject obj = _doc.as<JsonObject>();
         int exp = obj["exp"];
 
-        if (exp < millis()) // hết hạn
+        if (exp < millis() || exp >= (millis() + EXPIRE_TIME)) 
+        // hết hạn hoặc  không hợp lệ
         {
             return false;
         }

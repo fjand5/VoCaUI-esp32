@@ -91,12 +91,47 @@ void setupWebserver()
                       server.send(200);
                       return;
                     }
+                    log_d("getUsername: %s; getPassword: %s;",getUsername().c_str(), getPassword().c_str());
                     if (server.authenticate(getUsername().c_str(), getPassword().c_str()))
                     {
                       String bearerHeader = String("Bearer ") + create_auth_jwt();
                       server.sendHeader("Authorization", bearerHeader);
 
                       server.send(200);
+                    }
+                    else
+                    {
+                      server.send(401);
+                    }
+                  });
+        server.on("/changePassword",
+                  []()
+                  {
+                    String token = server.header("Authorization");
+                    token.replace("Bearer ", "");
+                    comHeader();
+                    if (server.method() == HTTP_OPTIONS)
+                    {
+                      server.send(200);
+                      return;
+                    }
+                    if (check_auth_jwt(token))
+                    {
+                      String bearerHeader = String("Bearer ") + create_auth_jwt();
+                      server.sendHeader("Authorization", bearerHeader);
+                      String arg = server.arg(0);
+
+                      DynamicJsonDocument _doc(258);
+                      deserializeJson(_doc, arg);
+                      JsonObject obj = _doc.as<JsonObject>();
+                      String password = obj["password"];
+                      String newPassword = obj["newPassword"];
+                      if(getPassword() == password){
+                        setPassword(newPassword);
+                        server.send(200);
+                      }else{
+                        server.send(400);
+                      }
                     }
                     else
                     {

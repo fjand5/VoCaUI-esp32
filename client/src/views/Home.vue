@@ -12,14 +12,20 @@
             menu-trigger="click"
           >
             <el-submenu index="1">
-              <template slot="title">Setting</template>
+              <template slot="title">Menu</template>
               <!-- <el-menu-item 
                   @click="$showMqttSetting"
                   index="1-1">MQTT</el-menu-item> -->
               <el-menu-item @click="$store.dispatch('reset')" index="1-1"
                 >RESET {{ getUptime }}</el-menu-item
               >
-              <el-menu-item @click="$store.dispatch('logout')" index="1-1"
+              <el-menu-item @click="$showChangePassword" index="1-1"
+                >Đổi mật khẩu</el-menu-item
+              >
+              <el-menu-item @click="$showLogin" index="1-1"
+                >Đăng nhập</el-menu-item
+              >
+              <el-menu-item @click="$store.dispatch('logout');$store.dispatch('closeWebsocket');" index="1-1"
                 >Đăng xuất</el-menu-item
               >
 
@@ -95,7 +101,9 @@ export default {
   mounted: function () {
     this.$showLogin();
   },
-  methods: {},
+  methods: {
+
+  },
 };
 </script>
 

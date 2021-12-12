@@ -1,5 +1,4 @@
 <template>
-
   <div class="component-wrapper">
     <el-col
       :xs="xs"
@@ -21,7 +20,7 @@
 <script>
 export default {
   props: {
-    params: Object
+    params: Object,
   },
   data: function () {
     return {
@@ -33,7 +32,8 @@ export default {
     };
   },
   mounted: function () {
-    if (typeof this.params.span == "number") {
+    if (!this.params.span) return;
+    else if (typeof this.params.span == "number") {
       this.xs = this.params.span;
       this.sm = this.params.span;
       this.md = this.params.span;

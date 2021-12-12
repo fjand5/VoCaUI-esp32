@@ -54,7 +54,7 @@ String getUsername()
     return DEFAULT_USERNAME;
   if (xSemaphoreTake(configContent_sem, portMAX_DELAY) == pdTRUE)
   {
-    String username = ConfigContent["*username"];
+    username = ConfigContent["*username"];
     xSemaphoreGive(configContent_sem);
   }
   return username;
@@ -84,7 +84,7 @@ String getPassword()
     return DEFAULT_PASSWORD;
   if (xSemaphoreTake(configContent_sem, portMAX_DELAY) == pdTRUE)
   {
-    String password = ConfigContent["*password"];
+    password = ConfigContent["*password"];
     xSemaphoreGive(configContent_sem);
   }
   return password;

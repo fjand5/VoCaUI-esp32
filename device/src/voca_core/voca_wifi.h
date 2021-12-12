@@ -16,8 +16,8 @@ void WiFiStationDisconnected(WiFiEvent_t event, WiFiEventInfo_t info)
   SET_FLAG(FLAG_CONNECTED_STA);
   if (checkKey("_ssid") && checkKey("_sspw"))
   {
-    // WiFi.begin(getValueByCStr("_ssid"), getValueByCStr("_sspw"));
-    WiFi.begin("Vong Cat 3", "78787878");
+    WiFi.begin(getValueByCStr("_ssid"), getValueByCStr("_sspw"));
+    // WiFi.begin("Vong Cat 3", "78787878");
 
     while (WiFi.status() != WL_CONNECTED && millis() < 30000)
     {
@@ -116,8 +116,8 @@ void setupWifi(void)
 
   if (checkKey("_ssid") && checkKey("_sspw"))
   {
-    // WiFi.begin(getValueByCStr("_ssid"), getValueByCStr("_sspw"));
-    WiFi.begin("Vong Cat-Hide", "78787878");
+    WiFi.begin(getValueByCStr("_ssid"), getValueByCStr("_sspw"));
+    // WiFi.begin("Vong Cat-Hide", "78787878");
 
     while (WiFi.status() != WL_CONNECTED && millis() < 30000)
     {
