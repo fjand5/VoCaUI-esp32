@@ -38,7 +38,7 @@ const command = {
     },
     actions: {
         initCommand: function (context) {
-            // socket = new WebSocket('ws://' + "192.168.1.18" + ':81/' + localStorage.getItem('jwt_aut', ""))
+            // socket = new WebSocket('ws://' + "192.168.1.10" + ':81/' + localStorage.getItem('jwt_aut', ""))
             socket = new WebSocket('ws://' + window.location.hostname + ':81/'+localStorage.getItem('jwt_aut', ""));
 
             socket.addEventListener('message', function (event) {

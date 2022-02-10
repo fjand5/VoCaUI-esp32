@@ -5,9 +5,9 @@
       :visible.sync="changePasswordDialog"
       :append-to-body="true"
       :close-on-click-modal="false"
-      width="70%"
+      width="80%"
     >
-      <el-form label-width="150px" v-loading="loading">
+      <el-form v-loading="loading">
         <el-form-item label="Password">
           <el-input v-model="password" show-password></el-input>
         </el-form-item>

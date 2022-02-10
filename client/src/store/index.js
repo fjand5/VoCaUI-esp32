@@ -6,6 +6,7 @@ import system from './modules/system'
 import command from './modules/command'
 import render from './modules/render'
 import auth from './modules/auth'
+import manifest from './modules/manifest'
 
 
 Vue.use(Vuex)
@@ -17,7 +18,8 @@ const store = new Vuex.Store({
         system,
         command,
         render,
-        auth
+        auth,
+        manifest
     ]
 })
 export default store

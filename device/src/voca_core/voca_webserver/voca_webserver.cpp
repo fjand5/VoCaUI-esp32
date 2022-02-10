@@ -217,12 +217,12 @@ void VocaWebserver::sendComHeader()
     sendHeader(F("Access-Control-Allow-Headers"), "*");
     sendHeader(F("Access-Control-Expose-Headers"), "*");
 }
-void VocaWebserver::addHttpApi(const String url, Response response)
+void VocaWebserver::addHttpApi(const String url, Response response, bool security)
 {
     String _url = url;
     if (url.startsWith("/"))
         _url = url.substring(1);
-    on(String("/api/") + _url, [this, response]()
+    on(String("/api/") + _url, [this, response, security]()
        {
               if (xSemaphoreTake(semHttpRequest, portMAX_DELAY) == pdTRUE)
               {
@@ -234,6 +234,7 @@ void VocaWebserver::addHttpApi(const String url, Response response)
                   return;
                 }
 #ifdef AUTH_FEATURE
+            if(security){
                 String token = header("Authorization");
                 token.replace("Bearer ", "");
                 if (vocaAuth.checkAuthJwt(token))
@@ -246,6 +247,10 @@ void VocaWebserver::addHttpApi(const String url, Response response)
                 {
                   send(401);
                 }
+
+            }else{
+                response();
+            }
 #else
                     response();
 #endif

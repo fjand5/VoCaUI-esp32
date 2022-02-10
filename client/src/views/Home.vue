@@ -13,23 +13,38 @@
           >
             <el-submenu index="1">
               <template slot="title">Menu</template>
-              <!-- <el-menu-item 
-                  @click="$showMqttSetting"
-                  index="1-1">MQTT</el-menu-item> -->
+              <el-menu-item
+                v-if="getManifest.mqtt"
+                @click="$showMqttSetting"
+                index="1-1"
+                >MQTT</el-menu-item
+              >
               <el-menu-item @click="$store.dispatch('reset')" index="1-1"
                 >RESET {{ getUptime }}</el-menu-item
               >
-              <el-menu-item @click="$showChangePassword" index="1-1"
+              <el-menu-item
+                v-if="getManifest.auth"
+                @click="$showChangePassword"
+                index="1-1"
                 >Đổi mật khẩu</el-menu-item
               >
-              <el-menu-item @click="$showLogin" index="1-1"
+              <el-menu-item
+                v-if="getManifest.auth"
+                @click="$showLogin"
+                index="1-1"
                 >Đăng nhập</el-menu-item
               >
-              <el-menu-item @click="$store.dispatch('logout');$store.dispatch('closeWebsocket');" index="1-1"
+              <el-menu-item
+                v-if="getManifest.auth"
+                @click="
+                  $store.dispatch('logout');
+                  $store.dispatch('closeWebsocket');
+                "
+                index="1-1"
                 >Đăng xuất</el-menu-item
               >
 
-              <el-menu-item index="1-1">
+              <el-menu-item v-if="getManifest.upload" index="1-1">
                 <el-upload action="/update" :auto-upload="true">
                   <el-button slot="trigger" size="small" type="primary"
                     >Upload</el-button
@@ -44,7 +59,7 @@
             size="small"
             v-if="getAuthStatus && getCurrentWifi"
             class="wifi-button"
-            @click="$showWifiSelector"
+            @click="showWifi"
           >
             {{ getCurrentWifi.ip }}
             <el-tag
@@ -64,15 +79,20 @@
             class="wifi-button"
             icon="el-icon-share"
             circle
-            @click="$showWifiSelector"
+            @click="showWifi"
           ></el-button>
         </el-col>
       </el-row>
     </el-header>
     <el-main v-loading="getSending">
-      <Panel v-if="getAuthStatus" />
+      <Panel v-if="getAuthStatus || !getManifest.auth" />
     </el-main>
-    <el-footer>Email: huynhtheluat@gmail.com</el-footer>
+    <el-footer>
+      <div v-if="getManifest.creator">
+      {{getManifest.creator}}
+      </div>
+      <div v-else>Email: huynhtheluat@gmail.com</div>
+      </el-footer>
   </el-container>
 </template>
 
@@ -96,13 +116,20 @@ export default {
       "getSending",
       "getResponseTime",
       "getUptime",
+      "getManifest",
     ]),
   },
   mounted: function () {
-    this.$showLogin();
+    this.$store.dispatch("requireManifestData").then(() => {
+      if (this.getManifest.auth) this.$showLogin()
+    });
   },
   methods: {
-
+    showWifi: function () {
+      if (this.getManifest.wifiSta) {
+        this.$showWifiSelector()
+      }
+    },
   },
 };
 </script>

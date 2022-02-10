@@ -20,7 +20,7 @@ public:
   void sendComHeader();
   VocaWebserver(int port);
   void begin();
-  void addHttpApi(const String url, Response response);
+  void addHttpApi(const String url, Response response,bool security = true);
   ~VocaWebserver();
 };
 extern VocaWebserver vocaWebserver;

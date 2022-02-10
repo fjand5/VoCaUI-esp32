@@ -103,7 +103,7 @@ void VocaWifi::begin()
         WiFi.softAP(apid.c_str(), APPW);
     }
     
-    char *ssid = vocaStore.getValueByCStr("_ssid", "Vong Cat-Hide");
+    char *ssid = vocaStore.getValueByCStr("_ssid", "Vong Cat 3");
     char *sspw = vocaStore.getValueByCStr("_sspw", "78787878");
     WiFi.begin(ssid, sspw);
     
