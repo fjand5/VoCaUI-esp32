@@ -1,9 +1,9 @@
 #pragma once
-#include "voca_env.h"
+#include "../voca_env.h"
 #include <Arduino.h>
 #include <ArduinoJson.h>
 #include <ArduinoJWT.h>
-#include "voca_store/voca_store.h"
+#include "../voca_store/voca_store.h"
 class VocaAuth: public ArduinoJWT
 {
 private:

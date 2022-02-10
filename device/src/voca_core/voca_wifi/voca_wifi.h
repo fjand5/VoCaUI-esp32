@@ -1,5 +1,5 @@
 #pragma once
-#include "voca_env.h"
+#include "../voca_env.h"
 #include <WiFi.h>
 #include <ArduinoJson.h>
 #include "../voca_store/voca_store.h"

@@ -1,6 +1,6 @@
 #pragma once
-#include "voca_env.h"
-#include "voca_dist.h"
+#include "../voca_env.h"
+#include "../voca_dist.h"
 #include <WebServer.h>
 #include <ArduinoJson.h>
 #include <HTTPUpdateServer.h>
