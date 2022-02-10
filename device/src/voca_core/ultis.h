@@ -1,3 +1,4 @@
+#include <Arduino.h>
 String splitString(String str, String delim, uint16_t pos){
   String tmp = str;
   for(int i=0; i<pos; i++){
