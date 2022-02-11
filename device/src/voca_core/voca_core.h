@@ -9,6 +9,12 @@
 #include "voca_system.h"
 #include "voca_websocket/voca_websocket.h"
 
+#include <functional>
+typedef std::function<void (void)> OnVocaReady;
+OnVocaReady onVocaReady;
+void setOnVocaReady(OnVocaReady cbOnVocaReady){
+    onVocaReady = cbOnVocaReady;
+}
 void setup_voca()
 {
     vocaAuth.begin();
@@ -19,5 +25,7 @@ void setup_voca()
     vocaWebsocket.begin();
     setupSystem();
     vocaStatus.waitAllStatus();
+    if(onVocaReady != NULL)
+        onVocaReady();
 
 }
