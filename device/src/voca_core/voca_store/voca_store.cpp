@@ -68,6 +68,7 @@ void VocaStore::begin()
     xSemaphoreGive(semSpiffs);
     loadFileToContent();
     vocaStatus.setStatus(Status_Store_Initialized);
+    ready();
 }
 bool VocaStore::checkValidKey(const String key)
 {
@@ -147,7 +148,9 @@ bool VocaStore::updateStore()
 
         cfg_file.close();
         xSemaphoreGive(semSpiffs);
+        return true;
     }
+    return false;
 }
 void VocaStore::addStoreChangeEvent(EventBusFunction cb, void *prams)
 {
@@ -165,7 +168,7 @@ bool VocaStore::checkKey(const String key)
     }
     return false;
 }
-const String VocaStore::getValue(const String key, const String def, bool createIfNotExist)
+const String VocaStore::getValue(const String key, const String def, bool createIfNotExist, bool save)
 {
     if (!checkValidKey(key))
         return "";
@@ -182,7 +185,7 @@ const String VocaStore::getValue(const String key, const String def, bool create
     {
         if (createIfNotExist)
         {
-            setValue(key, def, true);
+            setValue(key, def, save);
         }
         return def;
     }

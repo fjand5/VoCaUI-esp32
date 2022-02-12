@@ -5,13 +5,14 @@
 #include "../voca_env.h"
 #include "../voca_status/voca_status.h"
 #include "../voca_eventbus/voca_eventbus.h"
+#include "../voca_base/voca_base.h"
 #include "FS.h"
 #include "SPIFFS.h"
 #include <map>
 #include <list>
 #include <ArduinoJson.h>
 extern VocaEventBus vocaEventBus;
-class VocaStore
+class VocaStore: public VocaBase
 {
 private:
   std::map<String, String> storeContent;
@@ -30,7 +31,7 @@ public:
   bool updateStore();
   void addStoreChangeEvent(EventBusFunction cb, void *prams);
   bool checkKey(const String key);
-  const String getValue(const String key, const String def = "", bool createValueByDefault = true);
+  const String getValue(const String key, const String def = "", bool createValueByDefault = true, bool save = true);
   void readValueToObject(const String key, JsonObject objectValue, const String def = "", bool createIfNotExist = true);
   char *getValueByCStr(const String key, const String def = "", bool createIfNotExist = true);
 
